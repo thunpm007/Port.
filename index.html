@@ -35,13 +35,15 @@ img{-webkit-user-drag:none;-khtml-user-drag:none;-moz-user-drag:none;-o-user-dra
   --maxw:1200px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:76px}
+html{scroll-behavior:smooth;scroll-padding-top:76px;overflow-x:hidden;max-width:100%}
 body{
   background:var(--bg);
   color:var(--text);
   font-family:var(--font-body);
   line-height:1.7;
   overflow-x:hidden;
+  max-width:100%;
+  position:relative;
   -webkit-font-smoothing:antialiased;
 }
 body::before{ /* ambient glow field */
@@ -254,9 +256,9 @@ section{position:relative;padding:clamp(80px,12vw,140px) clamp(20px,6vw,60px)}
 .carousel-nav{display:flex;gap:10px}
 .cbtn{width:44px;height:44px;border-radius:50%;background:var(--glass-strong);border:1px solid var(--stroke);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s}
 .cbtn:hover{border-color:var(--stroke-green);color:var(--green);transform:scale(1.06)}
-.carousel{overflow:hidden;border-radius:20px}
-.carousel-track{display:flex;gap:18px;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform}
-.carousel-track .slide{flex:0 0 calc((100% - 36px)/3);border-radius:18px;overflow:hidden;position:relative;aspect-ratio:3/4;cursor:pointer;background:#0a140d}
+.carousel{overflow:hidden;border-radius:20px;min-width:0;max-width:100%}
+.carousel-track{display:flex;gap:18px;min-width:0;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform}
+.carousel-track .slide{flex:0 0 calc((100% - 36px)/3);min-width:0;border-radius:18px;overflow:hidden;position:relative;aspect-ratio:3/4;cursor:pointer;background:#0a140d}
 .carousel-track .slide img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
 .carousel-track .slide:hover img{transform:scale(1.07)}
 .carousel-track .slide::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(4,10,7,.55));pointer-events:none}
@@ -365,6 +367,7 @@ footer p{color:var(--muted);font-size:13px}
   .field-grid{
     display:flex;
     overflow-x:auto;
+    max-width:100%;
     scroll-snap-type:x mandatory;
     gap:14px;
     padding:6px 11% 14px;
@@ -372,7 +375,7 @@ footer p{color:var(--muted);font-size:13px}
     scrollbar-width:none;
   }
   .field-grid::-webkit-scrollbar{display:none}
-  .field-grid .field-item.reveal{flex:0 0 78%;scroll-snap-align:center;opacity:.45;transform:scale(.9)}
+  .field-grid .field-item.reveal{flex:0 0 78%;min-width:0;scroll-snap-align:center;opacity:.45;transform:scale(.9)}
   .field-grid .field-item.reveal.is-center{opacity:1;transform:scale(1)}
 }
 @media(prefers-reduced-motion:reduce){
@@ -641,11 +644,11 @@ const featuredOnlyImgs=["gal1","gal5","gal7","gal8","gal15","gal17","gal18"];
 const galleryImgs=Array.from({length:26},(_,i)=>"gal"+(i+1)).filter(n=>!featuredOnlyImgs.includes(n));
 const featured=["gal1","gal5","gal7","gal18","gal17","gal15","gal8","gal1"];
 const certData=[
-  {img:"",th:"ประภาคารริมทะเลยามเช้า",en:"Seaside lighthouse and pier."},
-  {img:"",th:"เหยี่ยวขณะบินอยู่กลางท้องฟ้า",en:"A kite soaring in flight."},
-  {img:"",th:"ป่าสนในสายหมอกยามเช้า",en:"Pine forest in the morning mist."},
-  {img:"",th:"แสงอาทิตย์ยามเช้าเหนือผืนน้ำ",en:"Sunrise over a misty lake."},
-  {img:"",th:"นกหัวขวานเกาะบนลำต้นไม้",en:"A woodpecker on a tree trunk."}
+  {img:"pic1",th:"ประภาคารริมทะเลยามเช้า",en:"Seaside lighthouse and pier."},
+  {img:"pic2",th:"เหยี่ยวขณะบินอยู่กลางท้องฟ้า",en:"A kite soaring in flight."},
+  {img:"pic3",th:"ป่าสนในสายหมอกยามเช้า",en:"Pine forest in the morning mist."},
+  {img:"pic4",th:"แสงอาทิตย์ยามเช้าเหนือผืนน้ำ",en:"Sunrise over a misty lake."},
+  {img:"pic5",th:"นกหัวขวานเกาะบนลำต้นไม้",en:"A woodpecker on a tree trunk."}
 ];
 const IMG="assets/img/",TH="assets/img/thumb/";
 const zoomSVG='<span class="zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="16" y1="16" x2="21" y2="21"></line></svg></span>';
