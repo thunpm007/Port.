@@ -184,12 +184,12 @@ section{position:relative;padding:clamp(80px,12vw,140px) clamp(20px,6vw,60px)}
 .glass{background:var(--glass);border:1px solid var(--stroke);border-radius:22px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 
 /* ABOUT */
-.about-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:48px;align-items:start}
-.about-photo{position:relative;border-radius:24px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/5}
-.about-track{display:flex;width:100%;height:100%;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
-.about-track img{flex:0 0 100%;width:100%;height:100%;object-fit:cover}
+.about-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:48px;align-items:start;min-width:0}
+.about-photo{position:relative;border-radius:24px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/5;min-width:0;max-width:100%}
+.about-track{display:flex;width:100%;height:100%;min-width:0;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.about-track img{flex:0 0 100%;min-width:0;width:100%;height:100%;object-fit:cover}
 .about-photo::after{content:"";position:absolute;inset:0;border:1px solid var(--stroke-green);border-radius:24px;pointer-events:none}
-.about-photo .badge{position:absolute;left:18px;bottom:18px;z-index:2;padding:10px 16px;border-radius:14px;background:rgba(6,12,9,.6);border:1px solid var(--stroke-green);backdrop-filter:blur(10px);font-family:var(--font-head);font-size:13px}
+.about-photo .badge{position:absolute;left:18px;top:18px;z-index:2;padding:10px 16px;border-radius:14px;background:rgba(6,12,9,.6);border:1px solid var(--stroke-green);backdrop-filter:blur(10px);font-family:var(--font-head);font-size:13px}
 .about-photo .badge b{color:var(--green)}
 .about-dots{position:absolute;left:0;right:0;bottom:18px;z-index:2;display:flex;justify-content:center;gap:8px}
 .about-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:background .3s,transform .3s}
@@ -360,7 +360,20 @@ footer p{color:var(--muted);font-size:13px}
 }
 @media(max-width:440px){
   .skills-grid{grid-template-columns:1fr}
-  .field-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .field-grid{
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    gap:14px;
+    padding:6px 11% 14px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .field-grid::-webkit-scrollbar{display:none}
+  .field-grid .field-item.reveal{flex:0 0 78%;scroll-snap-align:center;opacity:.45;transform:scale(.9)}
+  .field-grid .field-item.reveal.is-center{opacity:1;transform:scale(1)}
 }
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:.001s!important;transition-duration:.001s!important}
@@ -645,6 +658,28 @@ fieldData.forEach((f,i)=>{
   d.onclick=()=>openLB("field",i);
   fg.appendChild(d);
 });
+
+/* ============ FIELD EXPERIENCE PEEK CAROUSEL (mobile) ============ */
+function updateFieldCenter(){
+  const items=[...fg.children];
+  if(!items.length)return;
+  const gridRect=fg.getBoundingClientRect();
+  const centerX=gridRect.left+gridRect.width/2;
+  let closest=null,closestDist=Infinity;
+  items.forEach(it=>{
+    const r=it.getBoundingClientRect();
+    const dist=Math.abs((r.left+r.width/2)-centerX);
+    if(dist<closestDist){closestDist=dist;closest=it;}
+  });
+  items.forEach(it=>it.classList.toggle("is-center",it===closest));
+}
+let fieldScrollTimer;
+fg.addEventListener("scroll",()=>{
+  clearTimeout(fieldScrollTimer);
+  fieldScrollTimer=setTimeout(updateFieldCenter,50);
+},{passive:true});
+window.addEventListener("resize",updateFieldCenter);
+setTimeout(updateFieldCenter,150);
 
 /* ============ BUILD SKILLS ============ */
 const sg=document.getElementById("skillsGrid");
