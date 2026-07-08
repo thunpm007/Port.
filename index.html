@@ -306,7 +306,7 @@ footer .brand{font-size:16px;margin-bottom:8px;display:inline-block}
 footer p{color:var(--muted);font-size:13px}
 
 /* ===================== LIGHTBOX ===================== */
-.lb{position:fixed;inset:0;z-index:1000;background:rgba(3,7,5,.94);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.lb{position:fixed;inset:0;z-index:1000;background:rgba(3,7,5,.94);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s ease;overscroll-behavior:contain;touch-action:pan-y}
 .lb.open{opacity:1;pointer-events:auto}
 .lb-stage{max-width:92vw;max-height:88vh;display:flex;flex-direction:column;align-items:center;gap:16px;transform:scale(.96);transition:transform .4s ease}
 .lb.open .lb-stage{transform:scale(1)}
@@ -749,15 +749,10 @@ const groups={
 };
 const lb=document.getElementById("lb"),lbImg=document.getElementById("lbImg"),
 lbCap=document.getElementById("lbCap"),lbCount=document.getElementById("lbCount");
-let curG=[],curI=0,lbScrollY=0;
+let curG=[],curI=0;
 function openLB(g,i){
   curG=groups[g];curI=i;renderLB();
   lb.classList.add("open");
-  lbScrollY=window.scrollY;
-  document.body.style.position="fixed";
-  document.body.style.top=`-${lbScrollY}px`;
-  document.body.style.left="0";
-  document.body.style.right="0";
 }
 function renderLB(){
   const it=curG[curI];lbImg.src=it.src;
@@ -766,11 +761,6 @@ function renderLB(){
 }
 function closeLB(){
   lb.classList.remove("open");
-  document.body.style.position="";
-  document.body.style.top="";
-  document.body.style.left="";
-  document.body.style.right="";
-  window.scrollTo(0,lbScrollY);
 }
 function lbNav(d){curI=(curI+d+curG.length)%curG.length;renderLB();}
 document.getElementById("lbClose").onclick=closeLB;
