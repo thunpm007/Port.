@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Thunnatorn</title>
+<meta name="description" content="Portfolio of Thunnatorn Phunmung — Bachelor of Science (Forestry), Wildlife, Photographer, Conservation." />
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="alternate icon" href="assets/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ===================== IMAGE PROTECTION ===================== */
+img{-webkit-user-drag:none;-khtml-user-drag:none;-moz-user-drag:none;-o-user-drag:none;user-drag:none;-webkit-user-select:none;user-select:none;pointer-events:auto;}
+
+/* ===================== THEME / VARIABLES ===================== */
+:root{
+  --bg:#050a07;
+  --bg-2:#07110c;
+  --green:#37e07b;
+  --green-2:#4ade80;
+  --green-soft:#86efac;
+  --green-deep:#0e3a24;
+  --text:#e9f2ec;
+  --muted:#9fb3a6;
+  --glass:rgba(255,255,255,0.045);
+  --glass-strong:rgba(255,255,255,0.07);
+  --stroke:rgba(255,255,255,0.09);
+  --stroke-green:rgba(55,224,123,0.35);
+  --shadow:0 20px 60px rgba(0,0,0,0.55);
+  --font-display:'Space Grotesk','Noto Sans Thai',sans-serif;
+  --font-head:'Poppins','Noto Sans Thai',sans-serif;
+  --font-body:'Inter','Noto Sans Thai',sans-serif;
+  --maxw:1200px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  line-height:1.7;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{ /* ambient glow field */
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(600px 400px at 12% 8%, rgba(55,224,123,0.10), transparent 60%),
+    radial-gradient(700px 500px at 90% 20%, rgba(20,120,70,0.12), transparent 60%),
+    radial-gradient(800px 600px at 50% 100%, rgba(30,90,55,0.14), transparent 60%),
+    linear-gradient(180deg,#050a07 0%,#040806 100%);
+}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--green);color:#04140b}
+
+/* scrollbar */
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:#040806}
+::-webkit-scrollbar-thumb{background:#1c3a2a;border-radius:20px}
+::-webkit-scrollbar-thumb:hover{background:#2a5a3f}
+
+/* ===================== NAV ===================== */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px clamp(18px,5vw,54px);
+  transition:padding .3s ease,background .3s ease,border-color .3s ease;
+  border-bottom:1px solid transparent;
+}
+.nav.scrolled{
+  background:rgba(6,12,9,0.72);
+  backdrop-filter:blur(16px) saturate(140%);
+  -webkit-backdrop-filter:blur(16px) saturate(140%);
+  border-bottom:1px solid var(--stroke);
+  padding-top:12px;padding-bottom:12px;
+}
+.brand{font-family:var(--font-display);font-weight:700;letter-spacing:.14em;font-size:18px}
+.brand span{color:var(--green)}
+.nav-links{display:flex;gap:6px;align-items:center}
+.nav-links a{
+  font-family:var(--font-head);font-size:14px;font-weight:500;letter-spacing:.02em;
+  color:var(--muted);padding:8px 14px;border-radius:999px;position:relative;transition:color .25s ease;
+}
+.nav-links a:hover{color:var(--text)}
+.nav-links a.active{color:var(--green)}
+.nav-links a::after{
+  content:"";position:absolute;left:14px;right:14px;bottom:2px;height:2px;border-radius:2px;
+  background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .3s ease;
+}
+.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:8px}
+.burger span{width:24px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
+.burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* ===================== HERO ===================== */
+.hero{position:relative;height:100vh;min-height:620px;width:100%;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-slide{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:0;animation:heroCycle 60s infinite;transform:scale(1.08);
+  will-change:opacity,transform;
+}
+.hero-slide:nth-child(1){animation-delay:0s}
+.hero-slide:nth-child(2){animation-delay:20s}
+.hero-slide:nth-child(3){animation-delay:40s}
+@keyframes heroCycle{
+  0%{opacity:0;transform:scale(1.12)}
+  8%{opacity:1}
+  28%{opacity:1;transform:scale(1.0)}
+  38%{opacity:0}
+  100%{opacity:0}
+}
+.hero-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:
+    linear-gradient(180deg,rgba(5,10,7,0.55) 0%,rgba(5,10,7,0.25) 40%,rgba(5,10,7,0.85) 100%),
+    radial-gradient(120% 100% at 50% 30%,transparent 40%,rgba(5,10,7,0.7) 100%);
+}
+.hero-content{position:relative;z-index:2;text-align:center;padding:0 22px;max-width:960px;will-change:transform,opacity}
+.hero-eyebrow{
+  font-family:var(--font-head);letter-spacing:.4em;text-transform:uppercase;font-size:12px;
+  color:var(--green-soft);margin-bottom:22px;opacity:0;animation:fadeUp 1s .2s forwards;
+}
+.hero-title{
+  font-family:var(--font-display);font-weight:700;line-height:.98;
+  font-size:clamp(48px,11vw,132px);letter-spacing:.02em;
+  background:linear-gradient(180deg,#ffffff 0%,#cfeeda 60%,#7fd6a4 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 8px 40px rgba(0,0,0,.4);
+  opacity:0;animation:fadeUp 1s .35s forwards;
+}
+.hero-sub{
+  font-family:var(--font-head);font-weight:500;font-size:clamp(15px,2.4vw,22px);
+  color:#e6f3ea;margin-top:18px;opacity:0;animation:fadeUp 1s .5s forwards;
+}
+.hero-roles{
+  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:26px;
+  opacity:0;animation:fadeUp 1s .65s forwards;
+}
+.hero-roles .chip{
+  font-family:var(--font-head);font-size:13px;font-weight:500;letter-spacing:.08em;
+  padding:9px 20px;border-radius:999px;color:#dbfbe7;
+  background:rgba(55,224,123,0.10);border:1px solid var(--stroke-green);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.hero-cta{margin-top:38px;opacity:0;animation:fadeUp 1s .8s forwards}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:600;font-size:14px;
+  padding:14px 30px;border-radius:999px;cursor:pointer;transition:.3s;border:1px solid var(--stroke-green);
+  background:linear-gradient(135deg,rgba(55,224,123,.9),rgba(30,160,90,.9));color:#04140b;
+  box-shadow:0 10px 30px rgba(30,160,90,.35);
+}
+.btn:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(55,224,123,.45)}
+.scroll-ind{
+  display:none;
+}
+.mouse{width:26px;height:42px;border:2px solid rgba(255,255,255,.5);border-radius:14px;position:relative}
+.mouse::after{content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);width:4px;height:8px;border-radius:2px;background:var(--green);animation:scrollDot 1.6s infinite}
+@keyframes scrollDot{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}80%{opacity:0;transform:translate(-50%,12px)}100%{opacity:0}}
+.scroll-ind span{font-size:10px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===================== SECTIONS ===================== */
+section{position:relative;padding:clamp(80px,12vw,140px) clamp(20px,6vw,60px)}
+.container{max-width:var(--maxw);margin:0 auto}
+.sec-head{margin-bottom:56px;max-width:760px}
+.sec-index{font-family:var(--font-display);font-size:13px;letter-spacing:.3em;color:var(--green);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.sec-index::before{content:"";width:30px;height:1px;background:var(--green);display:inline-block}
+.sec-title{font-family:var(--font-display);font-weight:700;font-size:clamp(30px,5.5vw,58px);line-height:1.05;letter-spacing:-.01em}
+.sec-title em{font-style:normal;color:var(--green)}
+.sec-desc{color:var(--muted);margin-top:16px;font-size:16px;max-width:640px}
+
+/* bilingual blocks */
+.bi{margin-top:8px}
+.bi .th{font-family:'Noto Sans Thai',var(--font-body);font-size:16px;color:#e3efe7;line-height:1.85}
+.bi .en{font-size:15px;color:var(--muted);line-height:1.8;margin-top:14px;padding-top:14px;border-top:1px solid var(--stroke)}
+.lang-tag{display:inline-block;font-family:var(--font-head);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--green-soft);background:rgba(55,224,123,.10);border:1px solid var(--stroke-green);padding:2px 9px;border-radius:6px;margin-bottom:8px}
+
+.glass{background:var(--glass);border:1px solid var(--stroke);border-radius:22px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:48px;align-items:start}
+.about-photo{position:relative;border-radius:24px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/5}
+.about-track{display:flex;width:100%;height:100%;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.about-track img{flex:0 0 100%;width:100%;height:100%;object-fit:cover}
+.about-photo::after{content:"";position:absolute;inset:0;border:1px solid var(--stroke-green);border-radius:24px;pointer-events:none}
+.about-photo .badge{position:absolute;left:18px;bottom:18px;z-index:2;padding:10px 16px;border-radius:14px;background:rgba(6,12,9,.6);border:1px solid var(--stroke-green);backdrop-filter:blur(10px);font-family:var(--font-head);font-size:13px}
+.about-photo .badge b{color:var(--green)}
+.about-dots{position:absolute;left:0;right:0;bottom:18px;z-index:2;display:flex;justify-content:center;gap:8px}
+.about-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:background .3s,transform .3s}
+.about-dots span.active{background:var(--green);transform:scale(1.25)}
+.about-card{padding:34px}
+.about-name{font-family:var(--font-display),'Noto Sans Thai',sans-serif;font-size:28px;font-weight:700;margin-bottom:2px}
+.about-name-en{color:var(--muted);font-family:var(--font-head);font-size:15px;font-weight:500;margin-bottom:8px}
+.about-role{color:var(--green-soft);font-family:var(--font-head);font-size:14px;letter-spacing:.05em;margin-bottom:22px}
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:26px}
+.info-item{padding:16px;border-radius:14px;background:var(--glass-strong);border:1px solid var(--stroke)}
+.info-item .k{font-family:var(--font-head);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);margin-bottom:6px}
+.info-item .v{font-size:15px;color:var(--text)}
+.focus-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.focus-row .tag{font-family:var(--font-head);font-size:12.5px;padding:8px 16px;border-radius:999px;background:var(--glass-strong);border:1px solid var(--stroke);color:var(--text);transition:.3s}
+.focus-row .tag:hover{border-color:var(--stroke-green);color:var(--green);transform:translateY(-2px)}
+
+/* EXPERIENCE */
+.exp-card{padding:36px;margin-bottom:20px;position:relative;overflow:hidden}
+.exp-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--green),transparent)}
+.exp-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline;margin-bottom:6px}
+.exp-role{font-family:var(--font-display);font-size:21px;font-weight:600}
+.exp-date{font-family:var(--font-head);font-size:13px;color:var(--green);letter-spacing:.05em;white-space:nowrap}
+.exp-org{color:var(--muted);font-size:14px;margin-bottom:20px}
+.resp{list-style:none;display:grid;gap:10px;margin-top:8px}
+.resp li{position:relative;padding-left:26px;font-size:15px;color:#dbe7de}
+.resp li::before{content:"";position:absolute;left:2px;top:9px;width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+.resp li .th2{color:#e3efe7}
+.resp li .en2{color:var(--muted);font-size:13.5px}
+
+.subhead{display:flex;align-items:center;gap:14px;margin:52px 0 26px}
+.subhead h3{font-family:var(--font-display);font-size:22px;font-weight:600}
+.subhead .line{flex:1;height:1px;background:var(--stroke)}
+.field-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.field-item{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;aspect-ratio:4/3;background:#0a140d}
+.field-item img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease,filter .5s ease}
+.field-item:hover img{transform:scale(1.08);filter:brightness(1.05)}
+.field-item .cap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;background:linear-gradient(transparent 40%,rgba(4,10,7,.9));opacity:0;transition:opacity .4s ease}
+.field-item:hover .cap{opacity:1}
+.field-item .cap .th{font-family:'Noto Sans Thai';font-size:13.5px;color:#fff}
+.field-item .cap .en{font-size:12px;color:var(--green-soft);margin-top:2px}
+.field-item .zoom{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(6,12,9,.6);border:1px solid var(--stroke-green);display:flex;align-items:center;justify-content:center;opacity:0;transition:.4s}
+.field-item:hover .zoom{opacity:1}
+
+/* SKILLS */
+.skills-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.skill-card{padding:26px 22px;border-radius:20px;background:var(--glass);border:1px solid var(--stroke);position:relative;overflow:hidden;transition:transform .4s ease,border-color .4s ease,box-shadow .4s ease}
+.skill-card::before{content:"";position:absolute;inset:0;background:radial-gradient(140px 140px at var(--mx,50%) var(--my,0%),rgba(55,224,123,.16),transparent 70%);opacity:0;transition:opacity .4s ease}
+.skill-card:hover{transform:translateY(-8px);border-color:var(--stroke-green);box-shadow:0 24px 50px rgba(0,0,0,.5)}
+.skill-card:hover::before{opacity:1}
+.skill-ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(55,224,123,.10);border:1px solid var(--stroke-green);margin-bottom:18px;transition:.4s}
+.skill-card:hover .skill-ic{transform:scale(1.1) rotate(-4deg);box-shadow:0 0 26px rgba(55,224,123,.4)}
+.skill-ic svg{width:26px;height:26px;stroke:var(--green);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.skill-name{font-family:var(--font-display);font-size:18px;font-weight:600;margin-bottom:8px}
+.skill-th{font-family:'Noto Sans Thai';font-size:13px;color:#cfe0d4;line-height:1.7}
+.skill-en{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6}
+
+/* SKILLS carousel */
+.carousel-wrap{margin-top:56px;position:relative}
+.carousel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.carousel-head h3{font-family:var(--font-display);font-size:20px;font-weight:600}
+.carousel-head p{color:var(--muted);font-size:13px}
+.carousel-nav{display:flex;gap:10px}
+.cbtn{width:44px;height:44px;border-radius:50%;background:var(--glass-strong);border:1px solid var(--stroke);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s}
+.cbtn:hover{border-color:var(--stroke-green);color:var(--green);transform:scale(1.06)}
+.carousel{overflow:hidden;border-radius:20px}
+.carousel-track{display:flex;gap:18px;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform}
+.carousel-track .slide{flex:0 0 calc((100% - 36px)/3);border-radius:18px;overflow:hidden;position:relative;aspect-ratio:3/4;cursor:pointer;background:#0a140d}
+.carousel-track .slide img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
+.carousel-track .slide:hover img{transform:scale(1.07)}
+.carousel-track .slide::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(4,10,7,.55));pointer-events:none}
+
+/* PHOTOGRAPHY GALLERY */
+.gallery{column-count:4;column-gap:14px}
+.gallery .g-item{break-inside:avoid;margin-bottom:14px;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;background:#0a140d}
+.gallery .g-item img{width:100%;transition:transform .7s ease,filter .5s ease;display:block}
+.gallery .g-item::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 60%,rgba(4,10,7,.6));opacity:0;transition:.4s}
+.gallery .g-item:hover img{transform:scale(1.06)}
+.gallery .g-item:hover::after{opacity:1}
+.gallery .g-item .zoom{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(6,12,9,.55);border:1px solid var(--stroke-green);display:flex;align-items:center;justify-content:center;opacity:0;transition:.4s;z-index:2}
+.gallery .g-item:hover .zoom{opacity:1}
+.zoom svg{width:15px;height:15px;stroke:var(--green);fill:none;stroke-width:2;stroke-linecap:round}
+
+/* CERTIFICATES */
+.cert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.cert-item{border-radius:18px;overflow:hidden;cursor:pointer;background:var(--glass);border:1px solid var(--stroke);transition:.4s}
+.cert-item:hover{border-color:var(--stroke-green);transform:translateY(-6px)}
+.cert-thumb{position:relative;aspect-ratio:4/3;overflow:hidden}
+.cert-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
+.cert-item:hover .cert-thumb img{transform:scale(1.07)}
+.cert-cap{padding:16px 18px}
+.cert-cap .th{font-family:'Noto Sans Thai';font-size:14px;color:#e3efe7}
+.cert-cap .en{font-size:12.5px;color:var(--muted);margin-top:4px}
+
+/* CONTACT */
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch}
+.contact-card{padding:40px}
+.contact-card h3{font-family:var(--font-display);font-size:26px;margin-bottom:10px}
+.contact-card p{color:var(--muted);font-size:15px;margin-bottom:26px}
+.contact-list{display:grid;gap:14px}
+.contact-link{display:flex;align-items:center;gap:16px;padding:16px 18px;border-radius:14px;background:var(--glass-strong);border:1px solid var(--stroke);transition:.35s}
+.contact-link:hover{border-color:var(--stroke-green);transform:translateX(6px)}
+.contact-link .ci{width:44px;height:44px;border-radius:12px;background:rgba(55,224,123,.10);border:1px solid var(--stroke-green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.contact-link .ci svg{width:22px;height:22px;stroke:var(--green);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.contact-link .cl{font-family:var(--font-head);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+.contact-link .cv{font-size:15px;color:var(--text);word-break:break-all}
+.contact-visual{border-radius:22px;overflow:hidden;position:relative;min-height:320px}
+.contact-visual img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.contact-visual .cv-overlay{position:absolute;inset:0;background:linear-gradient(200deg,rgba(4,10,7,.15),rgba(4,10,7,.85));display:flex;align-items:flex-end;padding:30px}
+.contact-visual .cv-overlay p{font-family:var(--font-display);font-size:20px;color:#fff;line-height:1.3}
+
+/* FOOTER */
+footer{padding:40px 20px 50px;text-align:center;border-top:1px solid var(--stroke);margin-top:20px}
+footer .brand{font-size:16px;margin-bottom:8px;display:inline-block}
+footer p{color:var(--muted);font-size:13px}
+
+/* ===================== LIGHTBOX ===================== */
+.lb{position:fixed;inset:0;z-index:1000;background:rgba(3,7,5,.94);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.lb.open{opacity:1;pointer-events:auto}
+.lb-stage{max-width:92vw;max-height:88vh;display:flex;flex-direction:column;align-items:center;gap:16px;transform:scale(.96);transition:transform .4s ease}
+.lb.open .lb-stage{transform:scale(1)}
+.lb-img{max-width:92vw;max-height:78vh;border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.7);object-fit:contain}
+.lb-cap{text-align:center;max-width:640px;padding:0 20px}
+.lb-cap .th{font-family:'Noto Sans Thai';font-size:15px;color:#fff}
+.lb-cap .en{font-size:13px;color:var(--green-soft);margin-top:4px}
+.lb-close{position:absolute;top:22px;right:26px;width:48px;height:48px;border-radius:50%;background:var(--glass-strong);border:1px solid var(--stroke);color:#fff;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:.3s}
+.lb-close:hover{border-color:var(--stroke-green);color:var(--green);transform:rotate(90deg)}
+.lb-arrow{position:absolute;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;background:var(--glass-strong);border:1px solid var(--stroke);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s;z-index:2}
+.lb-arrow:hover{border-color:var(--stroke-green);color:var(--green)}
+.lb-arrow svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lb-prev{left:22px}.lb-next{right:22px}
+.lb-count{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-family:var(--font-head);font-size:13px;color:var(--muted);letter-spacing:.1em}
+
+/* ===================== REVEAL ANIM ===================== */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.rl{transform:translateX(-50px)}
+.reveal.rr{transform:translateX(50px)}
+.reveal.rs{transform:scale(.92)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.4s}
+
+/* ===================== RESPONSIVE ===================== */
+@media(max-width:960px){
+  .about-grid{grid-template-columns:1fr;gap:32px}
+  .skills-grid{grid-template-columns:repeat(2,1fr)}
+  .gallery{column-count:3}
+  .contact-wrap{grid-template-columns:1fr}
+  .carousel-track .slide{flex:0 0 calc((100% - 18px)/2)}
+}
+@media(max-width:720px){
+  html{scroll-padding-top:64px}
+  .nav-links{
+    position:fixed;top:0;right:0;height:100vh;width:min(78vw,320px);
+    flex-direction:column;justify-content:center;gap:8px;align-items:flex-start;
+    background:rgba(6,12,9,.96);backdrop-filter:blur(20px);
+    padding:40px 34px;transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);
+    border-left:1px solid var(--stroke);
+  }
+  .nav-links.open{transform:translateX(0)}
+  .nav-links a{font-size:20px;padding:12px 6px;width:100%}
+  .nav-links a::after{display:none}
+  .burger{display:flex;z-index:120}
+  .field-grid{grid-template-columns:repeat(2,1fr)}
+  .cert-grid{grid-template-columns:1fr}
+  .gallery{column-count:2}
+  .carousel-track .slide{flex:0 0 100%}
+  .info-grid{grid-template-columns:1fr}
+  section{padding-left:20px;padding-right:20px}
+}
+@media(max-width:440px){
+  .skills-grid{grid-template-columns:1fr}
+  .field-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001s!important;transition-duration:.001s!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav" id="nav">
+  <a href="#top" class="brand">TP<span>.</span></a>
+  <div class="nav-links" id="navLinks">
+    <a href="#about">About Me</a>
+    <a href="#experience">Experience</a>
+    <a href="#skills">Skills</a>
+    <a href="#photography">Photography</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero" id="top">
+  <div class="hero-bg">
+    <div class="hero-slide" style="background-image:url('assets/img/hero1.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('assets/img/hero2.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('assets/img/hero3.jpg')"></div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content" id="heroContent">
+    <div class="hero-eyebrow">Wildlife - Photographer - Conservation</div>
+    <h1 class="hero-title">THUNNATORN</h1>
+    <p class="hero-sub">Bachelor of Science(Forestry)</p>
+    
+    <div class="hero-cta"><a href="#about" class="btn">Explore Portfolio →</a></div>
+  </div>
+  <div class="scroll-ind"><div class="mouse"></div><span>Scroll</span></div>
+</header>
+
+<!-- ===================== ABOUT ===================== -->
+<section id="about">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-index">01 — About</div>
+      <h2 class="sec-title">About <em>Me</em></h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-photo reveal rl">
+        <div class="about-track" id="aboutTrack">
+          <img src="assets/img/profile1.jpg" alt="Thunnatorn Phunmung" loading="lazy" />
+          <img src="assets/img/profile2.jpg" alt="Thunnatorn Phunmung" loading="lazy" />
+          <img src="assets/img/profile3.jpg" alt="Thunnatorn Phunmung" loading="lazy" />
+          <img src="assets/img/profile4.jpg" alt="Thunnatorn Phunmung" loading="lazy" />
+        </div>
+        <div class="badge"><b>Thunnatorn</b> Phunmung</div>
+        <div class="about-dots" id="aboutDots"></div>
+      </div>
+      <div class="about-card glass reveal rr">
+        <div class="about-name">ธรรพ์ณธร พันธ์มุง</div>
+        <div class="about-name-en">Thunnatorn Phunmung</div>
+        <div class="about-role">Conservation Photographer · Forester</div>
+        <div class="bi">
+          <p class="th">ผม นายธรรพ์ณธร พันธ์มุง เกิดเมื่อปี พ.ศ. 2544 ปัจจุบันอายุ 25 ปี สำเร็จการศึกษาระดับปริญญาตรี วิทยาศาสตรบัณฑิต (วนศาสตร์) สาขาวิทยาศาสตร์ชีวภาพป่าไม้ จากมหาวิทยาลัยเกษตรศาสตร์ ในปี พ.ศ. 2567 ประสบการณ์การทำงานของผมส่วนใหญ่เกี่ยวข้องกับการสำรวจทรัพยากรป่าไม้ การจัดเก็บและวิเคราะห์ข้อมูลภาคสนาม รวมถึงการประยุกต์ใช้เทคโนโลยีสารสนเทศภูมิศาสตร์ (GIS)
+ไม่ว่าจะเป็นการสำรวจป่าไม้ การจำแนกชนิดพันธุ์นก หรือการประเมินความหลากหลายทางชีวภาพ ผมเชื่อว่าการผสานองค์ความรู้ทางวิทยาศาสตร์เข้ากับเทคโนโลยีสมัยใหม่ จะช่วยเพิ่มประสิทธิภาพในการทำงาน ลดผลกระทบต่อธรรมชาติ และนำไปสู่การจัดการทรัพยากรธรรมชาติอย่างยั่งยืน</p>
+          <p class="en">My name is Thunnatorn Phunmung. I graduated with a Bachelor of Science in Forestry (Forest Biology) from Kasetsart University in 2024.I have a strong passion for environmental conservation, forest ecosystems, and wildlife. My interests focus on understanding ecological processes and monitoring environmental changes through field surveys, scientific research, and forestry technologies. Outside of work, I enjoy birdwatching, wildlife observation, and nature photography, which allow me to connect closely with biodiversity and the natural world.
+My professional experience primarily involves forest resource surveys, field data collection and analysis, as well as the application of Geographic Information Systems (GIS) and other scientific tools to support sustainable natural resource management. 
+Whether conducting forest inventories, identifying bird species, or assessing biodiversity, I believe that integrating scientific knowledge with modern technology can improve efficiency, minimize environmental impacts, and contribute to sustainable natural resource management.
+</p>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="k">Age</div><div class="v">25 years old</div></div>
+          <div class="info-item"><div class="k">Degree</div><div class="v">B.Sc. Forestry (Forest Biology)</div></div>
+          <div class="info-item"><div class="k">University</div><div class="v">Kasetsart University</div></div>
+          <div class="info-item"><div class="k">Based in</div><div class="v">Thailand</div></div>
+        </div>
+        <div class="focus-row">
+          <span class="tag">Forest Inventory</span>
+          <span class="tag">Conservation Photography</span>
+          <span class="tag">Wildlife Ecology</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== EXPERIENCE ===================== -->
+<section id="experience">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-index">02 — Experience</div>
+      <h2 class="sec-title">Work <em>Experience</em></h2>
+    </div>
+
+    <div class="exp-card glass reveal">
+      <div class="exp-top">
+        <div class="exp-role">Forest Resource Survey &amp; Analysis Division</div>
+        <div class="exp-date"> พ.ศ. 2568 – ปัจจุบัน · 2025 — Present</div>
+      </div>
+      <div class="exp-org">สำนักวิจัยการอนุรักษ์ป่าไม้และพันธุ์พืช · กรมอุทยานแห่งชาติ สัตว์ป่า และพันธุ์พืช<br/>Forest &amp; Plant Conservation Research Office, Department of National Parks, Wildlife and Plant Conservation (DNP), Thailand</div>
+      <ul class="resp">
+        <li><span class="th2">สำรวจและจัดเก็บข้อมูลแปลงตัวอย่างทรัพยากรป่าไม้</span><br/><span class="en2">Conduct forest resource inventory and sample-plot surveys.</span></li>
+        <li><span class="th2">แปลและวิเคราะห์ภาพถ่ายดาวเทียมเพื่อจัดทำแผนที่</span><br/><span class="en2">Interpret satellite imagery and produce thematic maps.</span></li>
+        <li><span class="th2">วิเคราะห์ข้อมูลด้านป่าไม้และทรัพยากรธรรมชาติ</span><br/><span class="en2">Analyze forestry and natural resource data.</span></li>
+        <li><span class="th2">สนับสนุนการจัดทำฐานข้อมูลและรายงานด้านการอนุรักษ์</span><br/><span class="en2">Support the development of databases and conservation-related reports.</span></li>
+      </ul>
+    </div>
+
+    <div class="subhead reveal"><h3>Field Experience</h3><div class="line"></div></div>
+    <p class="sec-desc reveal" style="margin-top:-10px;margin-bottom:24px">ประสบการณ์ภาคสนามในการสำรวจป่าไม้และสัตว์ป่า<br/><span style="color:#6f857a">Field experience in forest &amp; wildlife surveys</span></p>
+    <div class="field-grid" id="fieldGrid"></div>
+  </div>
+</section>
+
+<!-- ===================== SKILLS ===================== -->
+<section id="skills">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-index">03 — Skills</div>
+      <h2 class="sec-title">Skills &amp; <em>Expertise</em></h2>
+      <p class="sec-desc">ทักษะและความเชี่ยวชาญที่ใช้ในงานสำรวจ อนุรักษ์ และถ่ายภาพธรรมชาติ<br/><span style="color:#6f857a">A blend of field science, geospatial technology and visual storytelling.</span></p>
+    </div>
+    <div class="skills-grid" id="skillsGrid"></div>
+
+    <div class="carousel-wrap reveal">
+      <div class="carousel-head">
+        <div>
+          <h3>Through the Lens</h3>
+        </div>
+        <div class="carousel-nav">
+          <button class="cbtn" id="cPrev" aria-label="Previous"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+          <button class="cbtn" id="cNext" aria-label="Next"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+        </div>
+      </div>
+      <div class="carousel"><div class="carousel-track" id="cTrack"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PHOTOGRAPHY ===================== -->
+<section id="photography">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-index">04 — Photography</div>
+      <h2 class="sec-title">Photo<em>graphy</em></h2>
+      <p class="sec-desc">แกลเลอรีภาพธรรมชาติ สัตว์ป่า และภูมิทัศน์ <br/><span style="color:#6f857a">A gallery of nature, wildlife and landscape photography </span></p>
+    </div>
+    <p class="sec-desc" style="max-width:900px;margin-top:-24px;margin-bottom:40px">ปัจจุบันโลกกำลังเผชิญกับการเปลี่ยนแปลงของสภาพภูมิอากาศและสิ่งแวดล้อมที่เกิดขึ้นอย่างรวดเร็ว ส่งผลให้สิ่งมีชีวิตและระบบนิเวศจำนวนมากต้องเผชิญกับความท้าทาย แม้ว่าการเปลี่ยนแปลงบางประการจะนำมาซึ่งโอกาสใหม่ ๆ แต่อีกหลายสิ่งอาจสูญหายไปอย่างไม่อาจหวนคืนได้<br/><br/>เพื่อบันทึกและถ่ายทอดความงดงาม คุณค่า และเรื่องราวของธรรมชาติที่ได้พบเห็นระหว่างการเดินทาง ผมหวังว่าภาพถ่ายเหล่านี้จะช่วยสร้างความตระหนักรู้ กระตุ้นให้ผู้คนเห็นความสำคัญของทรัพยากรธรรมชาติ และร่วมกันขับเคลื่อนการอนุรักษ์อย่างยั่งยืน<br/><br/><span style="color:#6f857a">Today, the world is experiencing rapid climate and environmental change, placing countless species and ecosystems under increasing pressure. While some changes may create new opportunities, many others could lead to irreversible loss.<br/><br/>Through my travels, I seek to document and share the beauty, value, and stories of the natural world. I hope these photographs will inspire greater awareness, encourage people to recognize the importance of our natural resources, and contribute to collective efforts toward a more sustainable future.</span></p>
+    <div class="gallery" id="gallery"></div>
+  </div>
+</section>
+
+<!-- ===================== CERTIFICATES ===================== -->
+<section id="certificates">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-index">05 — Certificates</div>
+      <h2 class="sec-title">Certi<em>ficates</em></h2>
+    </div>
+    <div class="cert-grid" id="certGrid"></div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section id="contact">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-index">06 — Contact</div>
+      <h2 class="sec-title">Get in <em>Touch</em></h2>
+    </div>
+    <div class="contact-wrap">
+      <div class="contact-card glass reveal rl">
+        <h3>Let's connect</h3>
+        <p>For collaborations & photography commission.</p>
+        <div class="contact-list">
+          <a class="contact-link" href="mailto:methunpm2001@gmail.com">
+            <span class="ci"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><polyline points="3 7 12 13 21 7"></polyline></svg></span>
+            <span><span class="cl">Email</span><br/><span class="cv">methunpm2001@gmail.com</span></span>
+          </a>
+          <a class="contact-link" href="https://facebook.com/AnimalBiscuit" target="_blank" rel="noopener">
+            <span class="ci"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></span>
+            <span><span class="cl">Facebook</span><br/><span class="cv">AnimalBiscuit</span></span>
+          </a>
+          <a class="contact-link" href="https://instagram.com/Anima1Biscuit" target="_blank" rel="noopener">
+            <span class="ci"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg></span>
+            <span><span class="cl">Instagram</span><br/><span class="cv">Anima1Biscuit</span></span>
+          </a>
+        </div>
+      </div>
+      <div class="contact-visual reveal rr">
+        <img src="assets/img/hero2.jpg" alt="Forest" loading="lazy" />
+        <div class="cv-overlay"><p>“Documenting the beauty &amp; value of nature — one frame at a time.”</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="#top" class="brand">TP<span>.</span></a>
+  <p>Wildlife · Photographer · Conservation</p>
+  <p style="margin-top:6px;color:#5c6f64">© <span id="yr"></span> · Thunnatorn Phunmung</p>
+</footer>
+
+<!-- ===================== LIGHTBOX ===================== -->
+<div class="lb" id="lb">
+  <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lb-arrow lb-prev" id="lbPrev" aria-label="Previous"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+  <button class="lb-arrow lb-next" id="lbNext" aria-label="Next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+  <div class="lb-stage">
+    <img class="lb-img" id="lbImg" src="" alt="" />
+    <div class="lb-cap" id="lbCap"></div>
+  </div>
+  <div class="lb-count" id="lbCount"></div>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const fieldData=[
+  {img:"fieldex1",th:"การสำรวจแปลงตัวอย่างป่าชายเลน",en:"Mangrove Forest Sample Plot Survey."},
+  {img:"fieldex2",th:"การสำรวจแปลงตัวอย่างป่าชายเลน",en:"Mangrove Forest Sample Plot Survey."},
+  {img:"fieldex3",th:"เครื่องมือในการทำงาน",en:"Working Tools / Equipment."},
+  {img:"fieldex4",th:"การสำรวจแปลงตัวอย่าง",en:"Sample Plot Survey."},
+  {img:"fieldex5",th:"ลักษณะพื้นที่แปลงตัวอย่าง",en:"Characteristics of the Sample Plot Area."},
+  {img:"fieldex6",th:"ลักษณะพื้นที่แปลงตัวอย่าง",en:"Characteristics of the Sample Plot Area."}
+];
+const skills=[
+  {name:"GIS",th:"จัดทำแผนที่เชิงพื้นที่ วิเคราะห์การใช้ประโยชน์ที่ดินและสภาพปกคลุมพื้นที่",en:"Spatial mapping, land-use & land-cover analysis for forest planning.",ic:'<path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"/><path d="M9 7v13M15 4v13"/>'},
+  {name:"SMART",th:"ใช้โปรแกรม SMART ซึ่งเป็นเครื่องมือสำหรับการติดตามและรายงานผลในการลาดตระเวนป้องกันการลักลอบล่าสัตว์ป่า",en:"Use the SMART program for Monitoring & Reporting Tool for anti-poaching patrols.",ic:'<path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/>'},
+  {name:"Forest Survey",th:"สำรวจป่าไม้ วัดขนาดต้นไม้ ประเมินความหลากหลายและมวลชีวภาพ",en:"Forest inventory, tree measurement & biomass estimation.",ic:'<path d="M12 2L7 10h3l-4 7h5v5h2v-5h5l-4-7h3z"/>'},
+  {name:"Bird Identification",th:"จำแนกชนิดพันธุ์นกจากลักษณะ พฤติกรรม และเสียงร้อง",en:"Identifying bird species by plumage, behavior & vocalization.",ic:'<path d="M16 7h.01"/><path d="M20 8c0 4-3 6-6 7l-7 6v-4c0-6 4-11 9-11a4 4 0 0 1 4 2z"/><path d="M9 12L4 9"/>'},
+  {name:"Photography",th:"ถ่ายภาพธรรมชาติ สัตว์ป่า และภูมิทัศน์ เพื่อการอนุรักษ์",en:"Wildlife, nature & landscape photography for conservation.",ic:'<path d="M3 8a2 2 0 0 1 2-2h2l2-2h6l2 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="4"/>'},
+  {name:"Drone",th:"ใช้อากาศยานไร้คนขับสำรวจพื้นที่และจัดทำแผนที่ทางอากาศ",en:"Aerial surveys and drone mapping.",ic:'<circle cx="12" cy="12" r="2.5"/><path d="M12 9.5V6M12 14.5V18M9.5 12H6M14.5 12H18"/><circle cx="5" cy="5" r="2.5"/><circle cx="19" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/>'},
+  {name:"Scuba Open Water",th:"ได้รับการรับรอง NAUI Open Water Diver",en:"Certified NAUI Open Water Diver.",ic:'<path d="M3 15c1.5 0 1.5 1.5 3 1.5S9 15 10.5 15s1.5 1.5 3 1.5S15 15 16.5 15s1.5 1.5 3 1.5"/><path d="M3 19c1.5 0 1.5 1.5 3 1.5S9 19 10.5 19s1.5 1.5 3 1.5S15 19 16.5 19s1.5 1.5 3 1.5"/><circle cx="12" cy="6" r="2"/><path d="M12 8v3"/>'}
+];
+const galleryImgs=Array.from({length:26},(_,i)=>"gal"+(i+1));
+const galleryData=[
+  {th:"วาฬบรูด้า Bryde's Whale",en:"(<i>Balaenoptera edeni</i>)"},
+  {th:"แมงมุมใยกลม Orb-weaver spider",en:"(วงศ์ <i>Araneidae</i>)"},
+  {th:"นกตะกรุม Lesser Adjutant",en:"(<i>Leptoptilos javanicus</i>)"},
+  {th:"ป่าสนในสายหมอกยามเช้า Pine forest in the morning mist",en:""},
+  {th:"นกยางไฟหัวดำ Cinnamon Bittern",en:"(<i>Ixobrychus cinnamomeus</i>)"},
+  {th:"นกชายเลนขนาดเล็ก Small sandpiper",en:"(สกุล <i>Calidris</i>)"},
+  {th:"นกชายเลนขนาดเล็ก Small sandpiper",en:"(สกุล <i>Calidris</i>)"},
+  {th:"นกกระจิบ Prinia",en:"(สกุล <i>Prinia</i>)"},
+  {th:"นกกาบบัวตีนแดง Red-footed Booby",en:"(<i>Sula sula</i>)"},
+  {th:"นกจาบคาหัวเกาลัด Chestnut-headed Bee-eater",en:"(<i>Merops leschenaulti</i>)"},
+  {th:"นกแว่นตาขาว บนดอกซากุระดอย Oriental White-eye on wild Himalayan cherry blossom",en:"(<i>Zosterops palpebrosus</i>)"},
+  {th:"นกอีเสือสีน้ำตาล Brown Shrike",en:"(<i>Lanius cristatus</i>)"},
+  {th:"นกกะเต็นใหญ่ธรรมดา Stork-billed Kingfisher",en:"(<i>Pelargopsis capensis</i>)"},
+  {th:"ผีเสื้อกลุ่มดูดน้ำแร่ธาตุริมทราย Butterflies mud-puddling on sand",en:""},
+  {th:"ตะกอง Chinese Water Dragon",en:"(<i>Physignathus cocincinus</i>)"},
+  {th:"นกกระจาบทอง Asian Golden Weaver",en:"(<i>Ploceus hypoxanthus</i>)"},
+  {th:"นกยูงไทย ตัวผู้ Green Peafowl, male",en:"(<i>Pavo muticus</i>)"},
+  {th:"ชะนีมือขาว White-handed Gibbon",en:"(<i>Hylobates lar</i>)"},
+  {th:"ปูแสม Mangrove crab",en:"(วงศ์ <i>Sesarmidae</i>)"},
+  {th:"หยาดน้ำค้าง Sundew",en:"(<i>Drosera</i> sp.)"},
+  {th:"ปูก้ามดาบ Fiddler crab",en:"(<i>Uca</i> sp.)"},
+  {th:"นกอีเสือหลังเทา Grey-backed Shrike",en:"(<i>Lanius tephronotus</i>)"},
+  {th:"ฝูงนกหัวโตทอง Flock of Pacific Golden Plovers",en:"(<i>Pluvialis fulva</i>)"},
+  {th:"ใบไม้สีแดงยามแสงส่องยามเช้า Red leaves lit by morning light",en:""},
+  {th:"กิ้งก่า Forest lizard",en:"(สกุล <i>Calotes</i>)"},
+  {th:"นกเงือกกรามช้าง กินลูกไทร Great Hornbill feeding on figs",en:"(<i>Buceros bicornis</i>)"}
+];
+const featured=["gal1","gal5","gal7","gal18","gal17","gal15","gal8","gal1"];
+const certData=[
+  {img:"",th:"ประภาคารริมทะเลยามเช้า",en:"Seaside lighthouse and pier."},
+  {img:"",th:"เหยี่ยวขณะบินอยู่กลางท้องฟ้า",en:"A kite soaring in flight."},
+  {img:"",th:"ป่าสนในสายหมอกยามเช้า",en:"Pine forest in the morning mist."},
+  {img:"",th:"แสงอาทิตย์ยามเช้าเหนือผืนน้ำ",en:"Sunrise over a misty lake."},
+  {img:"",th:"นกหัวขวานเกาะบนลำต้นไม้",en:"A woodpecker on a tree trunk."}
+];
+const IMG="assets/img/",TH="assets/img/thumb/";
+const zoomSVG='<span class="zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="16" y1="16" x2="21" y2="21"></line></svg></span>';
+
+/* ============ BUILD FIELD EXPERIENCE ============ */
+const fg=document.getElementById("fieldGrid");
+fieldData.forEach((f,i)=>{
+  const d=document.createElement("div");
+  d.className="field-item reveal rs d"+((i%3)+1);
+  d.innerHTML=`<img src="${TH}${f.img}.jpg" alt="${f.en}" loading="lazy"/>${zoomSVG}
+    <div class="cap"><div class="th">${f.th}</div><div class="en">${f.en}</div></div>`;
+  d.onclick=()=>openLB("field",i);
+  fg.appendChild(d);
+});
+
+/* ============ BUILD SKILLS ============ */
+const sg=document.getElementById("skillsGrid");
+skills.forEach((s,i)=>{
+  const c=document.createElement("div");
+  c.className="skill-card reveal rs d"+((i%4)+1);
+  c.innerHTML=`<div class="skill-ic"><svg viewBox="0 0 24 24">${s.ic}</svg></div>
+    <div class="skill-name">${s.name}</div>
+    <div class="skill-th">${s.th}</div>
+    <div class="skill-en">${s.en}</div>`;
+  c.addEventListener("mousemove",e=>{const r=c.getBoundingClientRect();c.style.setProperty("--mx",(e.clientX-r.left)+"px");c.style.setProperty("--my",(e.clientY-r.top)+"px");});
+  sg.appendChild(c);
+});
+
+/* ============ BUILD CAROUSEL ============ */
+const ct=document.getElementById("cTrack");
+featured.forEach((n,i)=>{
+  const s=document.createElement("div");
+  s.className="slide";
+  s.innerHTML=`<img src="${TH}${n}.jpg" alt="Featured photograph" loading="lazy"/>`;
+  s.onclick=()=>openLB("featured",i);
+  ct.appendChild(s);
+});
+let cIndex=0;
+function perView(){return window.innerWidth<=720?1:window.innerWidth<=960?2:3;}
+function slideCar(){
+  const pv=perView();const max=Math.max(0,featured.length-pv);
+  cIndex=Math.max(0,Math.min(cIndex,max));
+  const slide=ct.querySelector(".slide");
+  const step=slide.getBoundingClientRect().width+18;
+  ct.style.transform=`translateX(${-cIndex*step}px)`;
+}
+document.getElementById("cNext").onclick=()=>{cIndex++;slideCar();};
+document.getElementById("cPrev").onclick=()=>{cIndex--;slideCar();};
+window.addEventListener("resize",slideCar);
+setTimeout(slideCar,100);
+
+/* ============ BUILD GALLERY ============ */
+const gl=document.getElementById("gallery");
+galleryImgs.forEach((n,i)=>{
+  const d=document.createElement("div");
+  d.className="g-item";
+  d.innerHTML=`<img src="${TH}${n}.jpg" alt="Photograph ${i+1}" loading="lazy"/>${zoomSVG}`;
+  d.onclick=()=>openLB("gallery",i);
+  gl.appendChild(d);
+});
+
+/* ============ BUILD CERTIFICATES ============ */
+const cg=document.getElementById("certGrid");
+certData.forEach((c,i)=>{
+  const d=document.createElement("div");
+  d.className="cert-item reveal rs d"+((i%3)+1);
+  d.innerHTML=`<div class="cert-thumb"><img src="${TH}${c.img}.jpg" alt="${c.en}" loading="lazy"/></div>
+    <div class="cert-cap"><div class="th">${c.th}</div><div class="en">${c.en}</div></div>`;
+  d.onclick=()=>openLB("cert",i);
+  cg.appendChild(d);
+});
+
+/* ============ LIGHTBOX ============ */
+const galleryCaptions={};
+galleryImgs.forEach((n,i)=>{galleryCaptions[n]=galleryData[i];});
+const groups={
+  field:fieldData.map(f=>({src:IMG+f.img+".jpg",th:f.th,en:f.en})),
+  featured:featured.map(n=>({src:IMG+n+".jpg",th:galleryCaptions[n]?.th,en:galleryCaptions[n]?.en})),
+  gallery:galleryImgs.map((n,i)=>({src:IMG+n+".jpg",th:galleryData[i]?.th,en:galleryData[i]?.en})),
+  cert:certData.map(c=>({src:IMG+c.img+".jpg",th:c.th,en:c.en}))
+};
+const lb=document.getElementById("lb"),lbImg=document.getElementById("lbImg"),
+lbCap=document.getElementById("lbCap"),lbCount=document.getElementById("lbCount");
+let curG=[],curI=0;
+function openLB(g,i){curG=groups[g];curI=i;renderLB();lb.classList.add("open");document.body.style.overflow="hidden";}
+function renderLB(){
+  const it=curG[curI];lbImg.src=it.src;
+  lbCap.innerHTML=it.th?`<div class="th">${it.th}</div><div class="en">${it.en}</div>`:"";
+  lbCount.textContent=(curI+1)+" / "+curG.length;
+}
+function closeLB(){lb.classList.remove("open");document.body.style.overflow="";}
+function lbNav(d){curI=(curI+d+curG.length)%curG.length;renderLB();}
+document.getElementById("lbClose").onclick=closeLB;
+document.getElementById("lbNext").onclick=()=>lbNav(1);
+document.getElementById("lbPrev").onclick=()=>lbNav(-1);
+lb.onclick=e=>{if(e.target===lb)closeLB();};
+document.addEventListener("keydown",e=>{
+  if(!lb.classList.contains("open"))return;
+  if(e.key==="Escape")closeLB();
+  if(e.key==="ArrowRight")lbNav(1);
+  if(e.key==="ArrowLeft")lbNav(-1);
+});
+
+/* ============ NAV: scroll, burger, spy ============ */
+const nav=document.getElementById("nav"),navLinks=document.getElementById("navLinks"),burger=document.getElementById("burger");
+window.addEventListener("scroll",()=>{nav.classList.toggle("scrolled",window.scrollY>40);});
+burger.onclick=()=>{burger.classList.toggle("open");navLinks.classList.toggle("open");};
+navLinks.querySelectorAll("a").forEach(a=>a.onclick=()=>{burger.classList.remove("open");navLinks.classList.remove("open");});
+const spy=[...document.querySelectorAll("section[id]")];
+window.addEventListener("scroll",()=>{
+  let cur="";const y=window.scrollY+120;
+  spy.forEach(s=>{if(y>=s.offsetTop)cur=s.id;});
+  navLinks.querySelectorAll("a").forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+cur));
+});
+
+/* ============ HERO parallax + fade ============ */
+const heroContent=document.getElementById("heroContent"),heroBg=document.querySelector(".hero-bg");
+window.addEventListener("scroll",()=>{
+  const y=window.scrollY;
+  if(y<window.innerHeight){
+    heroContent.style.opacity=Math.max(0,1-y/(window.innerHeight*0.7));
+    heroContent.style.transform=`translateY(${y*0.35}px)`;
+    heroBg.style.transform=`translateY(${y*0.18}px)`;
+  }
+},{passive:true});
+
+/* ============ REVEAL on scroll ============ */
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});
+},{threshold:0.12,rootMargin:"0px 0px -60px 0px"});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+document.getElementById("yr").textContent=new Date().getFullYear();
+
+/* ============ ABOUT PHOTO SLIDER ============ */
+const aboutTrack=document.getElementById("aboutTrack"),aboutDotsEl=document.getElementById("aboutDots");
+if(aboutTrack&&aboutDotsEl){
+  const aboutSlides=aboutTrack.children.length;
+  let aboutIndex=0,aboutTimer;
+  for(let i=0;i<aboutSlides;i++){
+    const d=document.createElement("span");
+    if(i===0)d.className="active";
+    d.onclick=()=>{aboutIndex=i;updateAbout();resetAboutTimer();};
+    aboutDotsEl.appendChild(d);
+  }
+  function updateAbout(){
+    aboutTrack.style.transform=`translateX(${-aboutIndex*100}%)`;
+    [...aboutDotsEl.children].forEach((d,i)=>d.classList.toggle("active",i===aboutIndex));
+  }
+  function resetAboutTimer(){
+    clearInterval(aboutTimer);
+    aboutTimer=setInterval(()=>{aboutIndex=(aboutIndex+1)%aboutSlides;updateAbout();},4000);
+  }
+  resetAboutTimer();
+}
+
+/* ============ IMAGE / RIGHT-CLICK PROTECTION ============ */
+document.addEventListener("dragstart",e=>{if(e.target.tagName==="IMG")e.preventDefault();});
+document.addEventListener("contextmenu",e=>e.preventDefault());
+</script>
+</body
