@@ -35,13 +35,15 @@ img{-webkit-user-drag:none;-khtml-user-drag:none;-moz-user-drag:none;-o-user-dra
   --maxw:1200px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:76px}
+html{scroll-behavior:smooth;scroll-padding-top:76px;overflow-x:hidden;max-width:100%}
 body{
   background:var(--bg);
   color:var(--text);
   font-family:var(--font-body);
   line-height:1.7;
   overflow-x:hidden;
+  max-width:100%;
+  position:relative;
   -webkit-font-smoothing:antialiased;
 }
 body::before{ /* ambient glow field */
@@ -254,9 +256,9 @@ section{position:relative;padding:clamp(80px,12vw,140px) clamp(20px,6vw,60px)}
 .carousel-nav{display:flex;gap:10px}
 .cbtn{width:44px;height:44px;border-radius:50%;background:var(--glass-strong);border:1px solid var(--stroke);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s}
 .cbtn:hover{border-color:var(--stroke-green);color:var(--green);transform:scale(1.06)}
-.carousel{overflow:hidden;border-radius:20px}
-.carousel-track{display:flex;gap:18px;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform}
-.carousel-track .slide{flex:0 0 calc((100% - 36px)/3);border-radius:18px;overflow:hidden;position:relative;aspect-ratio:3/4;cursor:pointer;background:#0a140d}
+.carousel{overflow:hidden;border-radius:20px;min-width:0;max-width:100%}
+.carousel-track{display:flex;gap:18px;min-width:0;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform}
+.carousel-track .slide{flex:0 0 calc((100% - 36px)/3);min-width:0;border-radius:18px;overflow:hidden;position:relative;aspect-ratio:3/4;cursor:pointer;background:#0a140d}
 .carousel-track .slide img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
 .carousel-track .slide:hover img{transform:scale(1.07)}
 .carousel-track .slide::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(4,10,7,.55));pointer-events:none}
@@ -306,7 +308,10 @@ footer .brand{font-size:16px;margin-bottom:8px;display:inline-block}
 footer p{color:var(--muted);font-size:13px}
 
 /* ===================== LIGHTBOX ===================== */
-.lb{position:fixed;inset:0;z-index:1000;background:rgba(3,7,5,.94);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.lb{position:fixed;inset:0;z-index:1000;background:rgba(3,7,5,.97);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease;overscroll-behavior:contain;touch-action:pan-y;will-change:opacity}
+@media(min-width:900px){
+  .lb.open{backdrop-filter:blur(8px)}
+}
 .lb.open{opacity:1;pointer-events:auto}
 .lb-stage{max-width:92vw;max-height:88vh;display:flex;flex-direction:column;align-items:center;gap:16px;transform:scale(.96);transition:transform .4s ease}
 .lb.open .lb-stage{transform:scale(1)}
@@ -321,6 +326,12 @@ footer p{color:var(--muted);font-size:13px}
 .lb-arrow svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .lb-prev{left:22px}.lb-next{right:22px}
 .lb-count{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-family:var(--font-head);font-size:13px;color:var(--muted);letter-spacing:.1em}
+.lb-spin{position:absolute;top:50%;left:50%;margin:-21px 0 0 -21px;width:42px;height:42px;border:3px solid rgba(255,255,255,.18);border-top-color:var(--green);border-radius:50%;opacity:0;pointer-events:none;transition:opacity .2s;animation:lbspin .8s linear infinite;z-index:3}
+.lb.loading .lb-spin{opacity:1}
+.lb.loading .lb-img{opacity:.45;filter:blur(2px)}
+.lb-img{transition:opacity .25s ease,filter .25s ease}
+@keyframes lbspin{to{transform:rotate(360deg)}}
+body.lb-lock{overflow:hidden}
 
 /* ===================== REVEAL ANIM ===================== */
 .reveal{opacity:0;transform:translateY(40px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
@@ -365,6 +376,7 @@ footer p{color:var(--muted);font-size:13px}
   .field-grid{
     display:flex;
     overflow-x:auto;
+    max-width:100%;
     scroll-snap-type:x mandatory;
     gap:14px;
     padding:6px 11% 14px;
@@ -372,7 +384,7 @@ footer p{color:var(--muted);font-size:13px}
     scrollbar-width:none;
   }
   .field-grid::-webkit-scrollbar{display:none}
-  .field-grid .field-item.reveal{flex:0 0 78%;scroll-snap-align:center;opacity:.45;transform:scale(.9)}
+  .field-grid .field-item.reveal{flex:0 0 78%;min-width:0;scroll-snap-align:center;opacity:.45;transform:scale(.9)}
   .field-grid .field-item.reveal.is-center{opacity:1;transform:scale(1)}
 }
 @media(prefers-reduced-motion:reduce){
@@ -587,6 +599,7 @@ Whether conducting forest inventories, identifying bird species, or assessing bi
     <div class="lb-cap" id="lbCap"></div>
   </div>
   <div class="lb-count" id="lbCount"></div>
+  <div class="lb-spin"></div>
 </div>
 
 <script>
@@ -608,42 +621,44 @@ const skills=[
   {name:"Drone",th:"ใช้อากาศยานไร้คนขับสำรวจพื้นที่และจัดทำแผนที่ทางอากาศ",en:"Aerial surveys and drone mapping.",ic:'<circle cx="12" cy="12" r="2.5"/><path d="M12 9.5V6M12 14.5V18M9.5 12H6M14.5 12H18"/><circle cx="5" cy="5" r="2.5"/><circle cx="19" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/>'},
   {name:"Scuba Open Water",th:"ได้รับการรับรอง NAUI Open Water Diver",en:"Certified NAUI Open Water Diver.",ic:'<path d="M3 15c1.5 0 1.5 1.5 3 1.5S9 15 10.5 15s1.5 1.5 3 1.5S15 15 16.5 15s1.5 1.5 3 1.5"/><path d="M3 19c1.5 0 1.5 1.5 3 1.5S9 19 10.5 19s1.5 1.5 3 1.5S15 19 16.5 19s1.5 1.5 3 1.5"/><circle cx="12" cy="6" r="2"/><path d="M12 8v3"/>'}
 ];
-const galleryImgs=Array.from({length:26},(_,i)=>"gal"+(i+1));
-const galleryData=[
-  {th:"วาฬบรูด้า Bryde's Whale",en:"(<i>Balaenoptera edeni</i>)"},
-  {th:"แมงมุมใยกลม Orb-weaver spider",en:"(วงศ์ <i>Araneidae</i>)"},
-  {th:"นกตะกรุม Lesser Adjutant",en:"(<i>Leptoptilos javanicus</i>)"},
-  {th:"ป่าสนในสายหมอกยามเช้า Pine forest in the morning mist",en:""},
-  {th:"นกยางไฟหัวดำ Cinnamon Bittern",en:"(<i>Ixobrychus cinnamomeus</i>)"},
-  {th:"นกชายเลนขนาดเล็ก Small sandpiper",en:"(สกุล <i>Calidris</i>)"},
-  {th:"นกชายเลนขนาดเล็ก Small sandpiper",en:"(สกุล <i>Calidris</i>)"},
-  {th:"นกกระจิบ Prinia",en:"(สกุล <i>Prinia</i>)"},
-  {th:"นกกาบบัวตีนแดง Red-footed Booby",en:"(<i>Sula sula</i>)"},
-  {th:"นกจาบคาหัวเกาลัด Chestnut-headed Bee-eater",en:"(<i>Merops leschenaulti</i>)"},
-  {th:"นกแว่นตาขาว บนดอกซากุระดอย Oriental White-eye on wild Himalayan cherry blossom",en:"(<i>Zosterops palpebrosus</i>)"},
-  {th:"นกอีเสือสีน้ำตาล Brown Shrike",en:"(<i>Lanius cristatus</i>)"},
-  {th:"นกกะเต็นใหญ่ธรรมดา Stork-billed Kingfisher",en:"(<i>Pelargopsis capensis</i>)"},
-  {th:"ผีเสื้อกลุ่มดูดน้ำแร่ธาตุริมทราย Butterflies mud-puddling on sand",en:""},
-  {th:"ตะกอง Chinese Water Dragon",en:"(<i>Physignathus cocincinus</i>)"},
-  {th:"นกกระจาบทอง Asian Golden Weaver",en:"(<i>Ploceus hypoxanthus</i>)"},
-  {th:"นกยูงไทย ตัวผู้ Green Peafowl, male",en:"(<i>Pavo muticus</i>)"},
-  {th:"ชะนีมือขาว White-handed Gibbon",en:"(<i>Hylobates lar</i>)"},
-  {th:"ปูแสม Mangrove crab",en:"(วงศ์ <i>Sesarmidae</i>)"},
-  {th:"หยาดน้ำค้าง Sundew",en:"(<i>Drosera</i> sp.)"},
-  {th:"ปูก้ามดาบ Fiddler crab",en:"(<i>Uca</i> sp.)"},
-  {th:"นกอีเสือหลังเทา Grey-backed Shrike",en:"(<i>Lanius tephronotus</i>)"},
-  {th:"ฝูงนกหัวโตทอง Flock of Pacific Golden Plovers",en:"(<i>Pluvialis fulva</i>)"},
-  {th:"ใบไม้สีแดงยามแสงส่องยามเช้า Red leaves lit by morning light",en:""},
-  {th:"กิ้งก่า Forest lizard",en:"(สกุล <i>Calotes</i>)"},
-  {th:"นกเงือกกรามช้าง กินลูกไทร Great Hornbill feeding on figs",en:"(<i>Buceros bicornis</i>)"}
-];
+const allGalleryData={
+  gal1:{th:"วาฬบรูด้า Bryde's Whale",en:"(<i>Balaenoptera edeni</i>)"},
+  gal2:{th:"แมงมุมใยกลม Orb-weaver spider",en:"(วงศ์ <i>Araneidae</i>)"},
+  gal3:{th:"นกตะกรุม Lesser Adjutant",en:"(<i>Leptoptilos javanicus</i>)"},
+  gal4:{th:"ป่าสนในสายหมอกยามเช้า Pine forest in the morning mist",en:""},
+  gal5:{th:"นกยางไฟหัวดำ Cinnamon Bittern",en:"(<i>Ixobrychus cinnamomeus</i>)"},
+  gal6:{th:"นกชายเลนขนาดเล็ก Small sandpiper",en:"(สกุล <i>Calidris</i>)"},
+  gal7:{th:"นกชายเลนขนาดเล็ก Small sandpiper",en:"(สกุล <i>Calidris</i>)"},
+  gal8:{th:"นกกระจิบ Prinia",en:"(สกุล <i>Prinia</i>)"},
+  gal9:{th:"นกกาบบัวตีนแดง Red-footed Booby",en:"(<i>Sula sula</i>)"},
+  gal10:{th:"นกจาบคาหัวเกาลัด Chestnut-headed Bee-eater",en:"(<i>Merops leschenaulti</i>)"},
+  gal11:{th:"นกแว่นตาขาว บนดอกซากุระดอย Oriental White-eye on wild Himalayan cherry blossom",en:"(<i>Zosterops palpebrosus</i>)"},
+  gal12:{th:"นกอีเสือสีน้ำตาล Brown Shrike",en:"(<i>Lanius cristatus</i>)"},
+  gal13:{th:"นกกะเต็นใหญ่ธรรมดา Stork-billed Kingfisher",en:"(<i>Pelargopsis capensis</i>)"},
+  gal14:{th:"ผีเสื้อกลุ่มดูดน้ำแร่ธาตุริมทราย Butterflies mud-puddling on sand",en:""},
+  gal15:{th:"ตะกอง Chinese Water Dragon",en:"(<i>Physignathus cocincinus</i>)"},
+  gal16:{th:"นกกระจาบทอง Asian Golden Weaver",en:"(<i>Ploceus hypoxanthus</i>)"},
+  gal17:{th:"นกยูงไทย ตัวผู้ Green Peafowl, male",en:"(<i>Pavo muticus</i>)"},
+  gal18:{th:"ชะนีมือขาว White-handed Gibbon",en:"(<i>Hylobates lar</i>)"},
+  gal19:{th:"ปูแสม Mangrove crab",en:"(วงศ์ <i>Sesarmidae</i>)"},
+  gal20:{th:"หยาดน้ำค้าง Sundew",en:"(<i>Drosera</i> sp.)"},
+  gal21:{th:"ปูก้ามดาบ Fiddler crab",en:"(<i>Uca</i> sp.)"},
+  gal22:{th:"นกอีเสือหลังเทา Grey-backed Shrike",en:"(<i>Lanius tephronotus</i>)"},
+  gal23:{th:"ฝูงนกหัวโตทอง Flock of Pacific Golden Plovers",en:"(<i>Pluvialis fulva</i>)"},
+  gal24:{th:"ใบไม้สีแดงยามแสงส่องยามเช้า Red leaves lit by morning light",en:""},
+  gal25:{th:"กิ้งก่า Forest lizard",en:"(สกุล <i>Calotes</i>)"},
+  gal26:{th:"นกเงือกกรามช้าง กินลูกไทร Great Hornbill feeding on figs",en:"(<i>Buceros bicornis</i>)"}
+};
+/* Photos already shown in "Through the Lens" — excluded here to avoid duplicates */
+const featuredOnlyImgs=["gal1","gal5","gal7","gal8","gal15","gal17","gal18"];
+const galleryImgs=Array.from({length:26},(_,i)=>"gal"+(i+1)).filter(n=>!featuredOnlyImgs.includes(n));
 const featured=["gal1","gal5","gal7","gal18","gal17","gal15","gal8","gal1"];
 const certData=[
-  {img:"",th:"ประภาคารริมทะเลยามเช้า",en:"Seaside lighthouse and pier."},
-  {img:"",th:"เหยี่ยวขณะบินอยู่กลางท้องฟ้า",en:"A kite soaring in flight."},
-  {img:"",th:"ป่าสนในสายหมอกยามเช้า",en:"Pine forest in the morning mist."},
-  {img:"",th:"แสงอาทิตย์ยามเช้าเหนือผืนน้ำ",en:"Sunrise over a misty lake."},
-  {img:"",th:"นกหัวขวานเกาะบนลำต้นไม้",en:"A woodpecker on a tree trunk."}
+  {img:"pic1",th:"ประภาคารริมทะเลยามเช้า",en:"Seaside lighthouse and pier."},
+  {img:"pic2",th:"เหยี่ยวขณะบินอยู่กลางท้องฟ้า",en:"A kite soaring in flight."},
+  {img:"pic3",th:"ป่าสนในสายหมอกยามเช้า",en:"Pine forest in the morning mist."},
+  {img:"pic4",th:"แสงอาทิตย์ยามเช้าเหนือผืนน้ำ",en:"Sunrise over a misty lake."},
+  {img:"pic5",th:"นกหัวขวานเกาะบนลำต้นไม้",en:"A woodpecker on a tree trunk."}
 ];
 const IMG="assets/img/",TH="assets/img/thumb/";
 const zoomSVG='<span class="zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="16" y1="16" x2="21" y2="21"></line></svg></span>';
@@ -739,29 +754,52 @@ certData.forEach((c,i)=>{
 });
 
 /* ============ LIGHTBOX ============ */
-const galleryCaptions={};
-galleryImgs.forEach((n,i)=>{galleryCaptions[n]=galleryData[i];});
 const groups={
-  field:fieldData.map(f=>({src:IMG+f.img+".jpg",th:f.th,en:f.en})),
-  featured:featured.map(n=>({src:IMG+n+".jpg",th:galleryCaptions[n]?.th,en:galleryCaptions[n]?.en})),
-  gallery:galleryImgs.map((n,i)=>({src:IMG+n+".jpg",th:galleryData[i]?.th,en:galleryData[i]?.en})),
-  cert:certData.map(c=>({src:IMG+c.img+".jpg",th:c.th,en:c.en}))
+  field:fieldData.map(f=>({src:IMG+f.img+".jpg",thumb:TH+f.img+".jpg",th:f.th,en:f.en})),
+  featured:featured.map(n=>({src:IMG+n+".jpg",thumb:TH+n+".jpg",th:allGalleryData[n]?.th,en:allGalleryData[n]?.en})),
+  gallery:galleryImgs.map(n=>({src:IMG+n+".jpg",thumb:TH+n+".jpg",th:allGalleryData[n]?.th,en:allGalleryData[n]?.en})),
+  cert:certData.map(c=>({src:IMG+c.img+".jpg",thumb:TH+c.img+".jpg",th:c.th,en:c.en}))
 };
 const lb=document.getElementById("lb"),lbImg=document.getElementById("lbImg"),
 lbCap=document.getElementById("lbCap"),lbCount=document.getElementById("lbCount");
-let curG=[],curI=0;
-function openLB(g,i){curG=groups[g];curI=i;renderLB();lb.classList.add("open");document.body.style.overflow="hidden";}
+let curG=[],curI=0,lbToken=0;
+const lbLoaded={}; /* remember full-size images already downloaded */
+function openLB(g,i){
+  curG=groups[g];curI=i;renderLB();
+  lb.classList.add("open");
+  document.body.classList.add("lb-lock");
+}
 function renderLB(){
-  const it=curG[curI];lbImg.src=it.src;
+  const it=curG[curI];
   lbCap.innerHTML=it.th?`<div class="th">${it.th}</div><div class="en">${it.en}</div>`:"";
   lbCount.textContent=(curI+1)+" / "+curG.length;
+  const token=++lbToken;
+  if(lbLoaded[it.src]){ /* already downloaded — show instantly */
+    lbImg.src=it.src;lb.classList.remove("loading");
+  }else{
+    /* show the (already cached) thumbnail right away + spinner, swap in full-size when ready */
+    lbImg.src=it.thumb;lb.classList.add("loading");
+    const full=new Image();
+    full.onload=()=>{lbLoaded[it.src]=1;if(token===lbToken){lbImg.src=it.src;lb.classList.remove("loading");}};
+    full.onerror=()=>{if(token===lbToken)lb.classList.remove("loading");};
+    full.src=it.src;
+  }
+  /* preload neighbours so arrows feel instant */
+  [1,-1].forEach(d=>{
+    const n=curG[(curI+d+curG.length)%curG.length];
+    if(!lbLoaded[n.src]){const p=new Image();p.onload=()=>{lbLoaded[n.src]=1;};p.src=n.src;}
+  });
 }
-function closeLB(){lb.classList.remove("open");document.body.style.overflow="";}
+function closeLB(){
+  lb.classList.remove("open");
+  lb.classList.remove("loading");
+  document.body.classList.remove("lb-lock");
+}
 function lbNav(d){curI=(curI+d+curG.length)%curG.length;renderLB();}
 document.getElementById("lbClose").onclick=closeLB;
 document.getElementById("lbNext").onclick=()=>lbNav(1);
 document.getElementById("lbPrev").onclick=()=>lbNav(-1);
-lb.onclick=e=>{if(e.target===lb)closeLB();};
+lb.onclick=e=>{if(e.target===lb||e.target.classList.contains("lb-stage"))closeLB();};
 document.addEventListener("keydown",e=>{
   if(!lb.classList.contains("open"))return;
   if(e.key==="Escape")closeLB();
@@ -826,4 +864,5 @@ if(aboutTrack&&aboutDotsEl){
 document.addEventListener("dragstart",e=>{if(e.target.tagName==="IMG")e.preventDefault();});
 document.addEventListener("contextmenu",e=>e.preventDefault());
 </script>
-</body
+</body>
+</html>
