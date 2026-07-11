@@ -625,35 +625,35 @@ const skills=[
 const allGalleryData={
   gal1:{th:"วาฬบรูด้า Bryde's Whale",en:"(<i>Balaenoptera edeni</i>)"},
   gal2:{th:"แมงมุมใยกลม Orb-weaver spider",en:"(วงศ์ <i>Araneidae</i>)"},
-  gal3:{th:"นกตะกรุม Lesser Adjutant",en:"(<i>Leptoptilos javanicus</i>)"},
+  gal3:{th:"นกกาบบัว Painted Stork",en:"(<i>Mycteria leucocephala</i>)"},
   gal4:{th:"ป่าสนในสายหมอกยามเช้า Pine forest in the morning mist",en:""},
-  gal5:{th:"นกยางไฟหัวดำ Cinnamon Bittern",en:"(<i>Ixobrychus cinnamomeus</i>)"},
-  gal6:{th:"นกชายเลนขนาดเล็ก Small sandpiper",en:"(สกุล <i>Calidris</i>)"},
-  gal7:{th:"นกชายเลนขนาดเล็ก Small sandpiper",en:"(สกุล <i>Calidris</i>)"},
+  gal5:{th:"นกยางกรอกพันธุ์ชวา Javan pond heron",en:"(<i>Ardeola speciosa</i>)"},
+  gal6:{th:"นกชายเลนปากช้อน Spoon-billed Sandpiper",en:"(<i>Calidris pygmaea</i>)"},
+  gal7:{th:"นกชายเลนปากช้อน Spoon-billed Sandpiper",en:"(<i>Calidris pygmaea</i>)"},
   gal8:{th:"นกกระจิบ Prinia",en:"(สกุล <i>Prinia</i>)"},
-  gal9:{th:"นกกาบบัวตีนแดง Red-footed Booby",en:"(<i>Sula sula</i>)"},
+  gal9:{th:"นกบู๊บบี้ตีนแดง Red-footed Booby",en:"(<i>Sula sula</i>)"},
   gal10:{th:"นกจาบคาหัวเกาลัด Chestnut-headed Bee-eater",en:"(<i>Merops leschenaulti</i>)"},
-  gal11:{th:"นกแว่นตาขาว บนดอกซากุระดอย Oriental White-eye on wild Himalayan cherry blossom",en:"(<i>Zosterops palpebrosus</i>)"},
+  gal11:{th:"นกแว่นตาขาวหลังเขียว Warbling white eye",en:"(<i>Zosterops simplex</i>)"},
   gal12:{th:"นกอีเสือสีน้ำตาล Brown Shrike",en:"(<i>Lanius cristatus</i>)"},
   gal13:{th:"นกกะเต็นใหญ่ธรรมดา Stork-billed Kingfisher",en:"(<i>Pelargopsis capensis</i>)"},
-  gal14:{th:"ผีเสื้อกลุ่มดูดน้ำแร่ธาตุริมทราย Butterflies mud-puddling on sand",en:""},
+  gal14:{th:"กลุ่มผีเสื้อดูดน้ำแร่ธาตุ Butterflies mud-puddling on sand",en:""},
   gal15:{th:"ตะกอง Chinese Water Dragon",en:"(<i>Physignathus cocincinus</i>)"},
   gal16:{th:"นกกระจาบทอง Asian Golden Weaver",en:"(<i>Ploceus hypoxanthus</i>)"},
   gal17:{th:"นกยูงไทย ตัวผู้ Green Peafowl, male",en:"(<i>Pavo muticus</i>)"},
   gal18:{th:"ชะนีมือขาว White-handed Gibbon",en:"(<i>Hylobates lar</i>)"},
-  gal19:{th:"ปูแสม Mangrove crab",en:"(วงศ์ <i>Sesarmidae</i>)"},
+  gal19:{th:"ปูก้ามดาบ Fiddler crab",en:"(<i>Uca</i> sp.)"},
   gal20:{th:"หยาดน้ำค้าง Sundew",en:"(<i>Drosera</i> sp.)"},
   gal21:{th:"ปูก้ามดาบ Fiddler crab",en:"(<i>Uca</i> sp.)"},
   gal22:{th:"นกอีเสือหลังเทา Grey-backed Shrike",en:"(<i>Lanius tephronotus</i>)"},
-  gal23:{th:"ฝูงนกหัวโตทอง Flock of Pacific Golden Plovers",en:"(<i>Pluvialis fulva</i>)"},
+  gal23:{th:"ฝูงนกหัวโตหลังจุดสีทอง Pacific golden plover",en:"(<i>Pluvialis fulva</i>)"},
   gal24:{th:"ใบไม้สีแดงยามแสงส่องยามเช้า Red leaves lit by morning light",en:""},
-  gal25:{th:"กิ้งก่า Forest lizard",en:"(สกุล <i>Calotes</i>)"},
-  gal26:{th:"นกเงือกกรามช้าง กินลูกไทร Great Hornbill feeding on figs",en:"(<i>Buceros bicornis</i>)"}
+  gal25:{th:"กิ้งก่าแก้ว Forest crested lizard",en:"(<i>Calotes emma</i>)"},
+  gal26:{th:"นกเงือกกรามช้าง Great Hornbill",en:"(<i>Buceros bicornis</i>)"}
 };
 /* Photos already shown in "Through the Lens" — excluded here to avoid duplicates */
-const featuredOnlyImgs=["gal1","gal5","gal7","gal8","gal15","gal17","gal18"];
+const featuredOnlyImgs=["gal11","gal1","gal7","gal8","gal15","gal15","gal18","gal5"];
 const galleryImgs=Array.from({length:26},(_,i)=>"gal"+(i+1)).filter(n=>!featuredOnlyImgs.includes(n));
-const featured=["gal1","gal5","gal7","gal18","gal17","gal15","gal8","gal1"];
+const featured=["gal11","gal1","gal7","gal18","gal17","gal15","gal8","gal5"];
 const certData=[
   {img:"cert1",th:"ประกาศนียบัตรหลักสูตร \"การประกันคุณภาพและควบคุมคุณภาพ (QA/QC) ข้อมูลกิจกรรม สำหรับการจัดทำบัญชีก๊าซเรือนกระจกรายสาขาและมาตรการลดก๊าซเรือนกระจกของประเทศไทย\" จัดโดยกรมการเปลี่ยนแปลงสภาพภูมิอากาศและสิ่งแวดล้อม ร่วมกับมหาวิทยาลัยธรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ และ UNDP (25–29 พ.ค. 2569)",en:"Certificate of Achievement — Quality Assurance and Quality Control (QA/QC) of Activity Data for Thailand's Sectoral Greenhouse Gas Inventory and Mitigation, Department of Climate Change and Environment with Thammasat University, Kasetsart University and UNDP (May 25–29, 2026)."},
   {img:"cert2",th:"เกียรติบัตรผ่านการฝึกอบรมหลักสูตร \"การดำน้ำเบื้องต้น\" (Open Water) รุ่นที่ 1 จัดโดยกรมทรัพยากรทางทะเลและชายฝั่ง ณ เกาะล้าน อำเภอบางละมุง จังหวัดชลบุรี (26–30 พ.ย. 2568)",en:"Certificate — Basic Open Water Diving Course (Batch 1), Department of Marine and Coastal Resources, held at Koh Larn, Bang Lamung, Chonburi (Nov 26–30, 2025)."}
