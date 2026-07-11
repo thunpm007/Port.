@@ -308,11 +308,11 @@ footer .brand{font-size:16px;margin-bottom:8px;display:inline-block}
 footer p{color:var(--muted);font-size:13px}
 
 /* ===================== LIGHTBOX ===================== */
-.lb{position:fixed;inset:0;z-index:1000;background:rgba(3,7,5,.97);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease;overscroll-behavior:contain;touch-action:pan-y;will-change:opacity}
+.lb{position:fixed;inset:0;z-index:1000;background:rgba(3,7,5,.97);display:none;align-items:center;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity .25s ease;overscroll-behavior:contain;touch-action:pan-y}
 @media(min-width:900px){
   .lb.open{backdrop-filter:blur(8px)}
 }
-.lb.open{opacity:1;pointer-events:auto}
+.lb.open{opacity:1;pointer-events:auto;visibility:visible}
 .lb-stage{max-width:92vw;max-height:88vh;display:flex;flex-direction:column;align-items:center;gap:16px;transform:scale(.96);transition:transform .4s ease}
 .lb.open .lb-stage{transform:scale(1)}
 .lb-img{max-width:92vw;max-height:78vh;border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.7);object-fit:contain}
@@ -603,6 +603,7 @@ Whether conducting forest inventories, identifying bird species, or assessing bi
 </div>
 
 <script>
+console.log("portfolio script v3");
 /* ============ DATA ============ */
 const fieldData=[
   {img:"fieldex1",th:"การสำรวจแปลงตัวอย่างป่าชายเลน",en:"Mangrove Forest Sample Plot Survey."},
@@ -764,8 +765,12 @@ const lb=document.getElementById("lb"),lbImg=document.getElementById("lbImg"),
 lbCap=document.getElementById("lbCap"),lbCount=document.getElementById("lbCount");
 let curG=[],curI=0,lbToken=0;
 const lbLoaded={}; /* remember full-size images already downloaded */
+let lbHideTimer=null;
 function openLB(g,i){
   curG=groups[g];curI=i;renderLB();
+  clearTimeout(lbHideTimer);
+  lb.style.display="flex";
+  void lb.offsetHeight; /* force reflow so the fade-in still animates */
   lb.classList.add("open");
   document.body.classList.add("lb-lock");
 }
@@ -794,6 +799,9 @@ function closeLB(){
   lb.classList.remove("open");
   lb.classList.remove("loading");
   document.body.classList.remove("lb-lock");
+  /* after the fade-out, remove the overlay from the page entirely so it can never block clicks */
+  clearTimeout(lbHideTimer);
+  lbHideTimer=setTimeout(()=>{if(!lb.classList.contains("open"))lb.style.display="none";},300);
 }
 function lbNav(d){curI=(curI+d+curG.length)%curG.length;renderLB();}
 document.getElementById("lbClose").onclick=closeLB;
