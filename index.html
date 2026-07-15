@@ -437,10 +437,10 @@ body.lb-lock{overflow:hidden}
     <div class="about-grid">
       <div class="about-photo reveal rl">
         <div class="about-track" id="aboutTrack">
-          <img src="assets/img/profile1.jpg" alt="Thunnatorn Phunmung" loading="lazy" />
           <img src="assets/img/profile2.jpg" alt="Thunnatorn Phunmung" loading="lazy" />
-          <img src="assets/img/profile3.jpg" alt="Thunnatorn Phunmung" loading="lazy" />
           <img src="assets/img/profile4.jpg" alt="Thunnatorn Phunmung" loading="lazy" />
+          <img src="assets/img/profile5.jpg" alt="Thunnatorn Phunmung" loading="lazy" />
+          <img src="assets/img/profile6.jpg" alt="Thunnatorn Phunmung" loading="lazy" />
         </div>
         <div class="badge"><b>Thunnatorn</b> Phunmung</div>
         <div class="about-dots" id="aboutDots"></div>
@@ -694,11 +694,18 @@ const allGalleryData={
   gal23:{th:"ฝูงนกหัวโตหลังจุดสีทอง Pacific golden plover",en:"(<i>Pluvialis fulva</i>)"},
   gal24:{th:"ใบไม้สีแดงยามแสงส่องยามเช้า Red leaves lit by morning light",en:""},
   gal25:{th:"กิ้งก่าแก้ว Forest crested lizard",en:"(<i>Calotes emma</i>)"},
-  gal26:{th:"นกเงือกกรามช้าง Great Hornbill",en:"(<i>Buceros bicornis</i>)"}
+  gal26:{th:"นกเงือกกรามช้าง Great Hornbill",en:"(<i>Buceros bicornis</i>)"},
+  gal27:{th:"นกจับแมลงโฉบจับเหยื่อกลางอากาศ Flycatcher catching an insect mid-air",en:""},
+  gal28:{th:"นกแก๊กกำลังกินผลไม้ Oriental Pied Hornbill feeding on fruit",en:"(<i>Anthracoceros albirostris</i>)"},
+  gal29:{th:"นกกระเต็นน้อยธรรมดาเกาะป้ายเตือนริมน้ำ Common Kingfisher perched on a warning sign",en:"(<i>Alcedo atthis</i>)"},
+  gal30:{th:"นกกาน้ำบินเป็นคู่ Cormorants in flight",en:""},
+  gal31:{th:"ทางเดินป่าสนกลางสายหมอกยามเช้า Pine forest trail in the morning mist",en:""},
+  gal32:{th:"นกหัวโตหลังจุดสีทองบินไล่กัน Pacific golden plovers interacting mid-flight",en:"(<i>Pluvialis fulva</i>)"},
+  gal33:{th:"มองขึ้นสู่ยอดสนกลางสายหมอก Looking up a pine trunk in the mist",en:""}
 };
 /* Photos already shown in "Through the Lens" — excluded here to avoid duplicates */
 const featuredOnlyImgs=["gal11","gal1","gal7","gal8","gal15","gal15","gal18","gal5"];
-const galleryImgs=Array.from({length:26},(_,i)=>"gal"+(i+1)).filter(n=>!featuredOnlyImgs.includes(n));
+const galleryImgs=Array.from({length:33},(_,i)=>"gal"+(i+1)).filter(n=>!featuredOnlyImgs.includes(n));
 const featured=["gal11","gal1","gal7","gal18","gal17","gal15","gal8","gal5"];
 const certData=[
   {img:"cert1",th:"ประกาศนียบัตรหลักสูตร \"การประกันคุณภาพและควบคุมคุณภาพ (QA/QC) ข้อมูลกิจกรรม สำหรับการจัดทำบัญชีก๊าซเรือนกระจกรายสาขาและมาตรการลดก๊าซเรือนกระจกของประเทศไทย\" จัดโดยกรมการเปลี่ยนแปลงสภาพภูมิอากาศและสิ่งแวดล้อม ร่วมกับมหาวิทยาลัยธรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ และ UNDP (25–29 พ.ค. 2569)",en:"Certificate of Achievement — Quality Assurance and Quality Control (QA/QC) of Activity Data for Thailand's Sectoral Greenhouse Gas Inventory and Mitigation, Department of Climate Change and Environment with Thammasat University, Kasetsart University and UNDP (May 25–29, 2026)."},

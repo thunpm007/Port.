@@ -78,9 +78,9 @@ If the site suddenly looks empty after an edit, this is the first thing to check
 ## 4. Replacing or adding photos
 
 - Photos live in `assets/img/`. Each one has a matching smaller copy in `assets/img/thumb/` (used in grids for fast loading).
-- File names are fixed: `hero1–3`, `fieldex1–6`, `gal1–26`, `pic1–5`, `profile1–4`.
+- File names are fixed: `hero1–3`, `fieldex1–6`, `gal1–33`, `pic1–5`, `profile2, profile4, profile5, profile6`.
 - To **swap** a photo: replace both the file in `assets/img/` and the one with the same name in `assets/img/thumb/`.
-- To **add** gallery photos: change `Array.from({length:26}…)` to your new total count, then add the new numbered files (e.g. `gal27.jpg`) to both folders — and add a matching caption to `galleryData`.
+- To **add** gallery photos: change `Array.from({length:33}…)` to your new total count, then add the new numbered files (e.g. `gal34.jpg`) to both folders — and add a matching caption to `allGalleryData`.
 - Images are already web-optimized (max 1920px, compressed), so the site stays light and fast. Try to keep new photos similarly sized.
 
 ---
@@ -88,9 +88,9 @@ If the site suddenly looks empty after an edit, this is the first thing to check
 ## 5. Features already built in
 
 - **Hero background** — cycles through `hero1–3` automatically.
-- **About Me photo slider** — slides through `profile1–4` every 4 seconds; click the dots below the photo to jump to a specific one.
+- **About Me photo slider** — slides through the profile photos every 4 seconds; click the dots below the photo to jump to a specific one.
 - **Through the Lens** — a manual carousel (arrows) controlled by the `featured` list.
-- **Full-screen photo viewer (lightbox)** — click any photo to view it full-screen with its caption; arrow keys / on-screen arrows to navigate, Esc or click outside to close.
+- **Full-screen photo viewer (lightbox)** — click any photo to view it full-screen with its caption; arrow keys / on-screen arrows to navigate, Esc or click outside to close. The viewer shows the thumbnail instantly with a loading spinner, then swaps in the full-size photo when it finishes downloading; the next/previous photos are preloaded so the arrows feel instant, and the page behind is locked from scrolling while the viewer is open. (Script version: `portfolio script v3` — visible in the browser console, F12 → Console.)
 - **Image protection** — visitors can't drag-save images or right-click to save/copy (see the bottom of the `<script>` section if you ever need to remove this).
 - **Scroll-triggered animations** — sections fade/slide into view as you scroll down.
 
@@ -104,3 +104,5 @@ If the site suddenly looks empty after an edit, this is the first thing to check
 | A photo doesn't show up | File name typo, or the file isn't in *both* `assets/img/` and `assets/img/thumb/`. |
 | Browser tab icon not showing | Make sure `assets/favicon.svg` was uploaded along with `index.html`. |
 | Changes don't appear after publishing | GitHub Pages can take a minute to update — wait and refresh, or check **Settings → Pages** for a build error. |
+| Site still behaves like the old version after an update | Browser cache. On PC press **Ctrl+F5**; on mobile open the site in an incognito/private tab. To confirm which version is running, press F12 → Console — the current script prints `portfolio script v3`. |
+| Photo viewer won't open other photos / page can't be clicked | This was a bug in older versions of `index.html` (fixed in v3). Make sure the latest `index.html` is uploaded, then clear the cache as above. |
