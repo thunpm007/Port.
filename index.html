@@ -1,7 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th" data-lang="th">
 <head>
 <meta charset="UTF-8" />
+<script>try{
+  if(localStorage.getItem('theme')==='light'){document.documentElement.setAttribute('data-theme','light');}
+  var _l=localStorage.getItem('lang')||'th';
+  document.documentElement.setAttribute('data-lang',_l);
+  document.documentElement.setAttribute('lang',_l);
+}catch(e){document.documentElement.setAttribute('data-lang','th');}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Thunnatorn</title>
 <meta name="description" content="Portfolio of Thunnatorn Phunmung — Bachelor of Science (Forestry), Wildlife, Photographer, Conservation." />
@@ -127,7 +133,7 @@ a{color:inherit;text-decoration:none}
 .hero-content{position:relative;z-index:2;text-align:center;padding:0 22px;max-width:960px;will-change:transform,opacity}
 .hero-eyebrow{
   font-family:var(--font-head);letter-spacing:.4em;text-transform:uppercase;font-size:12px;
-  color:var(--green-soft);margin-bottom:22px;opacity:0;animation:fadeUp 1s .2s forwards;
+  color:#86efac;margin-bottom:22px;opacity:0;animation:fadeUp 1s .2s forwards;
 }
 .hero-title{
   font-family:var(--font-display);font-weight:700;line-height:.98;
@@ -193,7 +199,7 @@ section{position:relative;padding:clamp(80px,12vw,140px) clamp(20px,6vw,60px)}
 .about-track img{flex:0 0 100%;min-width:0;width:100%;height:100%;object-fit:cover}
 .about-photo::after{content:"";position:absolute;inset:0;border:1px solid var(--stroke-green);border-radius:24px;pointer-events:none}
 .about-photo .badge{position:absolute;left:18px;top:18px;z-index:2;padding:10px 16px;border-radius:14px;background:rgba(6,12,9,.6);border:1px solid var(--stroke-green);backdrop-filter:blur(10px);font-family:var(--font-head);font-size:13px}
-.about-photo .badge b{color:var(--green)}
+.about-photo .badge b{color:#37e07b}
 .about-dots{position:absolute;left:0;right:0;bottom:18px;z-index:2;display:flex;justify-content:center;gap:8px}
 .about-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:background .3s,transform .3s}
 .about-dots span.active{background:var(--green);transform:scale(1.25)}
@@ -220,19 +226,34 @@ section{position:relative;padding:clamp(80px,12vw,140px) clamp(20px,6vw,60px)}
 .resp li{position:relative;padding-left:26px;font-size:15px;color:#dbe7de}
 .resp li::before{content:"";position:absolute;left:2px;top:9px;width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
 .resp li .th2{color:#e3efe7}
+.resp li .en2{display:block}
+[data-lang="th"] .resp li .en2,[data-lang="en"] .resp li .th2{display:none}
 .resp li .en2{color:var(--muted);font-size:13.5px}
 
 .subhead{display:flex;align-items:center;gap:14px;margin:52px 0 26px}
 .subhead h3{font-family:var(--font-display);font-size:22px;font-weight:600}
 .subhead .line{flex:1;height:1px;background:var(--stroke)}
 .field-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+
+/* Field-experience marquee — two rows drifting in opposite directions, sped up
+   and reversed by the page's scroll velocity (ported from a framer-motion
+   ScrollVelocity component to plain JS, see the script at the bottom). */
+.sv-rows{display:flex;flex-direction:column;gap:16px}
+.sv-row{position:relative;overflow:hidden;width:100%}
+/* fade the two ends so images enter and leave instead of getting cut off */
+.sv-row{-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+        mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.sv-track{display:flex;flex-wrap:nowrap;gap:16px;will-change:transform}
+.sv-track .field-item{flex:0 0 auto;width:280px;aspect-ratio:4/3;opacity:1;transform:none}
+@media(max-width:960px){.sv-track .field-item{width:230px}}
+@media(max-width:720px){.sv-track .field-item{width:190px}}
 .field-item{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;aspect-ratio:4/3;background:#0a140d}
 .field-item img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease,filter .5s ease}
 .field-item:hover img{transform:scale(1.08);filter:brightness(1.05)}
 .field-item .cap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;background:linear-gradient(transparent 40%,rgba(4,10,7,.9));opacity:0;transition:opacity .4s ease}
 .field-item:hover .cap{opacity:1}
 .field-item .cap .th{font-family:'Noto Sans Thai';font-size:13.5px;color:#fff}
-.field-item .cap .en{font-size:12px;color:var(--green-soft);margin-top:2px}
+.field-item .cap .en{font-size:12px;color:#86efac;margin-top:2px}
 .field-item .zoom{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(6,12,9,.6);border:1px solid var(--stroke-green);display:flex;align-items:center;justify-content:center;opacity:0;transition:.4s}
 .field-item:hover .zoom{opacity:1}
 
@@ -282,6 +303,23 @@ section{position:relative;padding:clamp(80px,12vw,140px) clamp(20px,6vw,60px)}
 
 /* PHOTOGRAPHY GALLERY */
 .gallery{column-count:4;column-gap:14px}
+
+/* Photo sphere — gallery images arranged on a rotatable 3D sphere
+   (ported from a React SphereImageGrid component to plain JS). */
+.sphere-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
+.sphere{position:relative;margin:0 auto;user-select:none;-webkit-user-select:none;
+        cursor:grab;touch-action:none}
+.sphere.dragging{cursor:grabbing}
+.sphere-node{position:absolute;cursor:pointer;will-change:transform,opacity}
+.sphere-node .ring{
+  width:100%;height:100%;border-radius:50%;overflow:hidden;border:0;
+  box-shadow:0 12px 30px rgba(0,0,0,.5);
+  background:#0a140d;
+}
+[data-theme="light"] .sphere-node .ring{box-shadow:0 12px 30px rgba(70,62,38,.26);background:#e6e1d3}
+.sphere-node img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.sphere-hint{font-family:var(--font-head);font-size:12.5px;color:var(--muted);letter-spacing:.06em}
+[data-lang="th"] .sphere-hint{letter-spacing:.02em}
 .gallery .g-item{break-inside:avoid;margin-bottom:14px;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;background:#0a140d}
 .gallery .g-item img{width:100%;transition:transform .7s ease,filter .5s ease;display:block}
 .gallery .g-item::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 60%,rgba(4,10,7,.6));opacity:0;transition:.4s}
@@ -289,7 +327,7 @@ section{position:relative;padding:clamp(80px,12vw,140px) clamp(20px,6vw,60px)}
 .gallery .g-item:hover::after{opacity:1}
 .gallery .g-item .zoom{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(6,12,9,.55);border:1px solid var(--stroke-green);display:flex;align-items:center;justify-content:center;opacity:0;transition:.4s;z-index:2}
 .gallery .g-item:hover .zoom{opacity:1}
-.zoom svg{width:15px;height:15px;stroke:var(--green);fill:none;stroke-width:2;stroke-linecap:round}
+.zoom svg{width:15px;height:15px;stroke:#37e07b;fill:none;stroke-width:2;stroke-linecap:round}
 
 /* CERTIFICATES */
 .cert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
@@ -354,7 +392,7 @@ footer p{color:var(--muted);font-size:13px}
 .lb-img{max-width:92vw;max-height:78vh;border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.7);object-fit:contain}
 .lb-cap{text-align:center;max-width:640px;padding:0 20px}
 .lb-cap .th{font-family:'Noto Sans Thai';font-size:15px;color:#fff}
-.lb-cap .en{font-size:13px;color:var(--green-soft);margin-top:4px}
+.lb-cap .en{font-size:13px;color:#86efac;margin-top:4px}
 .lb-close{position:absolute;top:22px;right:26px;width:48px;height:48px;border-radius:50%;background:var(--glass-strong);border:1px solid var(--stroke);color:#fff;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:.3s}
 .lb-close:hover{border-color:var(--stroke-green);color:var(--green);transform:rotate(90deg)}
 .lb-arrow{position:absolute;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;background:var(--glass-strong);border:1px solid var(--stroke);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s;z-index:2}
@@ -377,6 +415,176 @@ body.lb-lock{overflow:hidden}
 .reveal.in{opacity:1;transform:none}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.4s}
 
+/* ===================== LIGHT / DARK THEME ===================== */
+/* Default (no attribute) = the site's original dark theme. Adding
+   data-theme="light" on <html> (via the nav toggle) swaps these tokens.
+   The hero, the certificate lightbox, and photo-caption overlays stay
+   dark on purpose in both modes — they sit on top of photos, not the
+   page background, so they're pinned to fixed colors above instead of
+   these variables. */
+[data-theme="light"]{
+  /* ---- EARTH TONE: olive + warm soil ---- */
+  --bg:#f5f2e9;
+  --bg-2:#ebe6d8;
+  --green:#6b7a3f;          /* accent (name kept so every var(--green) swaps at once) */
+  --green-2:#7f8f4b;
+  --green-soft:#5c6934;
+  --green-deep:#2f3520;
+  --text:#262a1e;
+  --muted:#6c6d5c;
+  --glass:rgba(70,62,38,0.045);
+  --glass-strong:rgba(70,62,38,0.07);
+  --stroke:rgba(70,62,38,0.14);
+  --stroke-green:rgba(107,122,63,0.32);
+  --shadow:0 20px 60px rgba(70,62,38,0.14);
+}
+[data-theme="light"] .site-bg{opacity:.62} /* same animated field, earth-tone palette (see the shader's PALETTES) */
+[data-theme="light"] body::before{
+  background:
+    radial-gradient(600px 400px at 12% 8%, rgba(107,122,63,0.09), transparent 60%),
+    radial-gradient(700px 500px at 90% 20%, rgba(166,124,82,0.10), transparent 60%),
+    radial-gradient(800px 600px at 50% 100%, rgba(199,196,150,0.28), transparent 60%),
+    linear-gradient(180deg,#faf8f1 0%,#ece7da 100%);
+}
+[data-theme="light"] ::selection{background:var(--green);color:#f7f5ec}
+[data-theme="light"] ::-webkit-scrollbar-track{background:#ece7da}
+[data-theme="light"] ::-webkit-scrollbar-thumb{background:#c9c9a8}
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#a8ac81}
+
+/* --- nav / dots --- */
+[data-theme="light"] .nav.scrolled{background:rgba(250,248,241,.92);backdrop-filter:none;-webkit-backdrop-filter:none}
+[data-theme="light"] .nav-links{backdrop-filter:none;-webkit-backdrop-filter:none}
+[data-theme="light"] .about-dots span{background:rgba(38,42,30,.20)}
+[data-theme="light"] .cardstack-dots button{background:rgba(38,42,30,.20)}
+
+/* --- body copy that was hard-coded pale --- */
+[data-theme="light"] .bi .th,
+[data-theme="light"] .resp li,
+[data-theme="light"] .resp li .th2,
+[data-theme="light"] .skill-th,
+[data-theme="light"] .cert-cap .th,
+[data-theme="light"] .cert-text .th{color:#262a1e}
+[data-theme="light"] .resp li::before{box-shadow:none}
+
+/* --- glass panels: no backdrop blur on a light page (visually flat, costly) --- */
+[data-theme="light"] .glass{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(255,253,247,.72)}
+
+/* --- image tiles: warm sand placeholder instead of near-black --- */
+[data-theme="light"] .cardstack .cs-card,
+[data-theme="light"] .cert-stack .cs-item,
+[data-theme="light"] .carousel-track .slide,
+[data-theme="light"] .gallery .g-item,
+[data-theme="light"] .field-item{background:#e6e1d3}
+[data-theme="light"] .cardstack .cs-card{box-shadow:0 20px 45px rgba(70,62,38,.20)}
+[data-theme="light"] .cardstack .cs-card.is-active{box-shadow:0 30px 70px rgba(70,62,38,.28)}
+[data-theme="light"] .cert-stack .cs-item{box-shadow:0 25px 60px rgba(70,62,38,.18)}
+[data-theme="light"] .skill-card:hover{box-shadow:0 24px 50px rgba(70,62,38,.16)}
+
+/* --- green tints baked into components --- */
+[data-theme="light"] .lang-tag,
+[data-theme="light"] .skill-ic,
+[data-theme="light"] .contact-link .ci{background:rgba(107,122,63,.10)}
+[data-theme="light"] .skill-card::before{
+  background:radial-gradient(140px 140px at var(--mx,50%) var(--my,0%),rgba(107,122,63,.14),transparent 70%);
+}
+[data-theme="light"] .skill-card:hover .skill-ic{box-shadow:0 0 26px rgba(107,122,63,.28)}
+
+/* --- HERO (sits on photos: warm dark scrim instead of the green-black one) --- */
+[data-theme="light"] .hero-overlay{
+  background:
+    linear-gradient(180deg,rgba(32,29,21,0.55) 0%,rgba(32,29,21,0.22) 40%,rgba(32,29,21,0.86) 100%),
+    radial-gradient(120% 100% at 50% 30%,transparent 60%,rgba(32,29,21,0.7) 100%);
+}
+[data-theme="light"] .hero-eyebrow{color:#cdd6a4}
+[data-theme="light"] .hero-title{
+  background:linear-gradient(180deg,#fffdf5 0%,#e8e3c4 60%,#b9c489 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+[data-theme="light"] .hero-sub{color:#f1efe2}
+[data-theme="light"] .hero-roles .chip{
+  color:#eaeccf;background:rgba(154,164,113,0.18);border-color:rgba(199,207,160,0.38);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+}
+[data-theme="light"] .btn{
+  background:linear-gradient(135deg,rgba(139,153,84,.98),rgba(97,111,55,.98));color:#f7f5ec;
+  border-color:rgba(97,111,55,.5);
+  box-shadow:0 10px 30px rgba(97,111,55,.30);
+}
+[data-theme="light"] .btn:hover{box-shadow:0 16px 40px rgba(97,111,55,.42)}
+
+/* --- overlays on photographs --- */
+[data-theme="light"] .about-photo .badge{
+  background:rgba(38,36,27,.62);border-color:rgba(199,207,160,.35);color:#f4f2e6;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+}
+[data-theme="light"] .about-photo .badge b{color:#c3cc99}
+[data-theme="light"] .field-item .cap{background:linear-gradient(transparent 40%,rgba(32,29,21,.9))}
+[data-theme="light"] .field-item .cap .en,
+[data-theme="light"] .lb-cap .en{color:#c3cc99}
+[data-theme="light"] .field-item .zoom,
+[data-theme="light"] .gallery .g-item .zoom{background:rgba(32,29,21,.62);border-color:rgba(199,207,160,.35)}
+[data-theme="light"] .zoom svg{stroke:#c3cc99}
+[data-theme="light"] .carousel-track .slide::after{background:linear-gradient(transparent 55%,rgba(32,29,21,.55))}
+[data-theme="light"] .gallery .g-item::after{background:linear-gradient(transparent 60%,rgba(32,29,21,.6))}
+[data-theme="light"] .contact-visual .cv-overlay{background:linear-gradient(200deg,rgba(32,29,21,.15),rgba(32,29,21,.85))}
+
+/* --- LIGHTBOX (full-screen over photos: warm charcoal, not green-black) --- */
+[data-theme="light"] .lb{background:rgba(30,27,20,.97)}
+[data-theme="light"] .lb-img{box-shadow:0 30px 80px rgba(20,17,12,.6)}
+[data-theme="light"] .lb-close,
+[data-theme="light"] .lb-arrow{background:rgba(255,253,247,.10);border-color:rgba(255,253,247,.22);color:#f7f5ec}
+[data-theme="light"] .lb-close:hover,
+[data-theme="light"] .lb-arrow:hover{border-color:rgba(199,207,160,.6);color:#c3cc99}
+[data-theme="light"] .lb-count{color:#b8b6a4}
+[data-theme="light"] .lb-spin{border-color:rgba(255,253,247,.20);border-top-color:#c3cc99}
+
+/* no transitions during the theme swap itself */
+.theme-swap *,.theme-swap *::before,.theme-swap *::after{
+  transition:none!important;animation-play-state:paused!important;
+}
+
+/* theme toggle button (nav) */
+.theme-toggle{width:40px;height:40px;border-radius:50%;background:var(--glass-strong);border:1px solid var(--stroke);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s;flex-shrink:0}
+.theme-toggle:hover{border-color:var(--stroke-green);color:var(--green)}
+.theme-toggle .ti-moon{display:none}
+[data-theme="light"] .theme-toggle .ti-sun{display:none}
+[data-theme="light"] .theme-toggle .ti-moon{display:block}
+.nav-right{display:flex;align-items:center;gap:10px}
+
+/* ===================== LANGUAGE (TH / EN) ===================== */
+/* Every bilingual fragment carries .l-th or .l-en; the toggle flips which set
+   is displayed. Anything with neither class (names, logos, handles) shows in
+   both languages. */
+[data-lang="th"] .l-en{display:none!important}
+[data-lang="en"] .l-th{display:none!important}
+/* the English block is a second paragraph under the Thai one — without its
+   partner it shouldn't keep the divider rule above it */
+[data-lang="en"] .bi .en{margin-top:0;padding-top:0;border-top:0}
+/* wide letter-spacing and uppercase are Latin conventions — they pull Thai
+   glyphs and their tone marks apart, so relax them in Thai */
+[data-lang="th"] .sec-index,
+[data-lang="th"] .info-item .k,
+[data-lang="th"] .contact-link .cl,
+[data-lang="th"] .hero-eyebrow,
+[data-lang="th"] .lang-tag,
+[data-lang="th"] .focus-row .tag{letter-spacing:.02em;text-transform:none}
+
+.lang-toggle{
+  display:flex;align-items:center;gap:2px;height:40px;padding:0 3px;
+  border-radius:999px;background:var(--glass-strong);border:1px solid var(--stroke);
+  cursor:pointer;flex-shrink:0;transition:.3s;
+}
+.lang-toggle:hover{border-color:var(--stroke-green)}
+.lang-toggle span{
+  font-family:var(--font-head);font-size:11.5px;font-weight:600;letter-spacing:.06em;
+  padding:5px 9px;border-radius:999px;color:var(--muted);transition:.25s;line-height:1;
+}
+[data-lang="th"] .lang-toggle .lt-th,
+[data-lang="en"] .lang-toggle .lt-en{background:var(--green);color:var(--bg)}
+@media(max-width:400px){
+  .lang-toggle span{padding:5px 7px;font-size:11px}
+}
+
 /* ===================== RESPONSIVE ===================== */
 @media(max-width:960px){
   .about-grid{grid-template-columns:1fr;gap:32px}
@@ -385,8 +593,11 @@ body.lb-lock{overflow:hidden}
   .contact-wrap{grid-template-columns:1fr}
   .carousel-track .slide{flex:0 0 calc((100% - 18px)/2)}
 }
-@media(max-width:720px){
-  html{scroll-padding-top:64px}
+/* The six links plus the TH|EN pill and the theme button stop fitting side by
+   side below this width — an iPad Air is 820px in portrait, and the English
+   labels are wider than the Thai ones — so collapse the links into the
+   slide-in drawer earlier than the rest of the mobile layout. */
+@media(max-width:900px){
   .nav-links{
     position:fixed;top:0;right:0;height:100vh;width:min(78vw,320px);
     flex-direction:column;justify-content:center;gap:8px;align-items:flex-start;
@@ -395,9 +606,13 @@ body.lb-lock{overflow:hidden}
     border-left:1px solid var(--stroke);
   }
   .nav-links.open{transform:translateX(0)}
+  [data-theme="light"] .nav-links{background:rgba(255,255,255,.97)}
   .nav-links a{font-size:20px;padding:12px 6px;width:100%}
   .nav-links a::after{display:none}
   .burger{display:flex;z-index:120}
+}
+@media(max-width:720px){
+  html{scroll-padding-top:64px}
   .field-grid{grid-template-columns:repeat(2,1fr)}
   .cert-grid{grid-template-columns:1fr}
   .gallery{column-count:2}
@@ -435,15 +650,24 @@ body.lb-lock{overflow:hidden}
 <!-- ===================== NAV ===================== -->
 <nav class="nav" id="nav">
   <a href="#top" class="brand">TP<span>.</span></a>
-  <div class="nav-links" id="navLinks">
-    <a href="#about">About Me</a>
-    <a href="#experience">Experience</a>
-    <a href="#skills">Skills</a>
-    <a href="#photography">Photography</a>
-    <a href="#certificates">Certificates</a>
-    <a href="#contact">Contact</a>
+  <div class="nav-right">
+    <div class="nav-links" id="navLinks">
+      <a href="#about" data-th="เกี่ยวกับผม" data-en="About Me">เกี่ยวกับผม</a>
+      <a href="#experience" data-th="ประสบการณ์" data-en="Experience">ประสบการณ์</a>
+      <a href="#skills" data-th="ทักษะ" data-en="Skills">ทักษะ</a>
+      <a href="#photography" data-th="ภาพถ่าย" data-en="Photography">ภาพถ่าย</a>
+      <a href="#certificates" data-th="ใบรับรอง" data-en="Certificates">ใบรับรอง</a>
+      <a href="#contact" data-th="ติดต่อ" data-en="Contact">ติดต่อ</a>
+    </div>
+    <button class="lang-toggle" id="langToggle" aria-label="สลับภาษา / Switch language">
+      <span class="lt-th">TH</span><span class="lt-en">EN</span>
+    </button>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light / dark mode">
+      <svg class="ti-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
+      <svg class="ti-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </button>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
-  <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 
 <!-- ===================== HERO ===================== -->
@@ -455,21 +679,21 @@ body.lb-lock{overflow:hidden}
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-content" id="heroContent">
-    <div class="hero-eyebrow">Wildlife  Photographer  Conservation</div>
+    <div class="hero-eyebrow"><span class="l-th">สัตว์ป่า  ช่างภาพ  การอนุรักษ์</span><span class="l-en">Wildlife  Photographer  Conservation</span></div>
     <h1 class="hero-title">THUNNATORN</h1>
-    <p class="hero-sub">Bachelor of Science (Forestry)</p>
+    <p class="hero-sub"><span class="l-th">วิทยาศาสตรบัณฑิต (วนศาสตร์)</span><span class="l-en">Bachelor of Science (Forestry)</span></p>
     
-    <div class="hero-cta"><a href="#about" class="btn">Explore Portfolio →</a></div>
+    <div class="hero-cta"><a href="#about" class="btn"><span class="l-th">ดูผลงาน →</span><span class="l-en">Explore Portfolio →</span></a></div>
   </div>
-  <div class="scroll-ind"><div class="mouse"></div><span>Scroll</span></div>
+  <div class="scroll-ind"><div class="mouse"></div><span class="l-th">เลื่อนลง</span><span class="l-en">Scroll</span></div>
 </header>
 
 <!-- ===================== ABOUT ===================== -->
 <section id="about">
   <div class="container">
     <div class="sec-head reveal">
-      <div class="sec-index">01 — About</div>
-      <h2 class="sec-title">About <em>Me</em></h2>
+      <div class="sec-index"><span class="l-th">01 — เกี่ยวกับผม</span><span class="l-en">01 — About</span></div>
+      <h2 class="sec-title"><span class="l-th">เกี่ยวกับ<em>ผม</em></span><span class="l-en">About <em>Me</em></span></h2>
     </div>
     <div class="about-grid">
       <div class="about-photo reveal rl">
@@ -483,25 +707,26 @@ body.lb-lock{overflow:hidden}
         <div class="about-dots" id="aboutDots"></div>
       </div>
       <div class="about-card glass reveal rr">
-        <div class="about-name">ธรรพ์ณธร พันธ์มุง</div>
-        <div class="about-name-en">Thunnatorn Phunmung</div>
-        <div class="about-role">Conservation Photographer · Forester</div>
+        <div class="about-name l-th">ธรรพ์ณธร พันธ์มุง</div>
+        <div class="about-name l-en">Thunnatorn Phunmung</div>
+        <div class="about-name-en l-th">Thunnatorn Phunmung</div>
+        <div class="about-role"><span class="l-th">ช่างภาพเพื่อการอนุรักษ์ · นักวนศาสตร์</span><span class="l-en">Conservation Photographer · Forester</span></div>
         <div class="bi">
-          <p class="th">ผม นายธรรพ์ณธร พันธ์มุง เกิดเมื่อปี พ.ศ. 2544 ปัจจุบันอายุ 25 ปี สำเร็จการศึกษาระดับปริญญาตรี วิทยาศาสตรบัณฑิต (วนศาสตร์) สาขาวิทยาศาสตร์ชีวภาพป่าไม้ จากมหาวิทยาลัยเกษตรศาสตร์ ในปี พ.ศ. 2567 ประสบการณ์การทำงานของผมส่วนใหญ่เกี่ยวข้องกับการสำรวจทรัพยากรป่าไม้ การจัดเก็บและวิเคราะห์ข้อมูลภาคสนาม รวมถึงการประยุกต์ใช้เทคโนโลยีสารสนเทศภูมิศาสตร์ (GIS)
+          <p class="th l-th">ผม นายธรรพ์ณธร พันธ์มุง เกิดเมื่อปี พ.ศ. 2544 ปัจจุบันอายุ 25 ปี สำเร็จการศึกษาระดับปริญญาตรี วิทยาศาสตรบัณฑิต (วนศาสตร์) สาขาวิทยาศาสตร์ชีวภาพป่าไม้ จากมหาวิทยาลัยเกษตรศาสตร์ ในปี พ.ศ. 2567 ประสบการณ์การทำงานของผมส่วนใหญ่เกี่ยวข้องกับการสำรวจทรัพยากรป่าไม้ การจัดเก็บและวิเคราะห์ข้อมูลภาคสนาม รวมถึงการประยุกต์ใช้เทคโนโลยีสารสนเทศภูมิศาสตร์ (GIS)
 ไม่ว่าจะเป็นการสำรวจป่าไม้ การจำแนกชนิดพันธุ์นก หรือการประเมินความหลากหลายทางชีวภาพ ผมเชื่อว่าการผสานองค์ความรู้ทางวิทยาศาสตร์เข้ากับเทคโนโลยีสมัยใหม่ จะช่วยเพิ่มประสิทธิภาพในการทำงาน ลดผลกระทบต่อธรรมชาติ และนำไปสู่การจัดการทรัพยากรธรรมชาติอย่างยั่งยืน</p>
-          <p class="en">My name is Thunnatorn Phunmung. I was born in 2001 and am currently 25 years old. I graduated with a Bachelor of Science in Forestry (Forest Biology) from Kasetsart University in 2024. My professional experience primarily involves forest resource surveys, field data collection and analysis, as well as the application of Geographic Information Systems (GIS).
+          <p class="en l-en">My name is Thunnatorn Phunmung. I was born in 2001 and am currently 25 years old. I graduated with a Bachelor of Science in Forestry (Forest Biology) from Kasetsart University in 2024. My professional experience primarily involves forest resource surveys, field data collection and analysis, as well as the application of Geographic Information Systems (GIS).
 Whether conducting forest surveys, identifying bird species, or assessing biodiversity, I believe that integrating scientific knowledge with modern technology can improve work efficiency, reduce impacts on nature, and lead to sustainable natural resource management.</p>
         </div>
         <div class="info-grid">
-          <div class="info-item"><div class="k">Age</div><div class="v">25 years old</div></div>
-          <div class="info-item"><div class="k">Degree</div><div class="v">B.Sc. Forestry (Forest Biology)</div></div>
-          <div class="info-item"><div class="k">University</div><div class="v">Kasetsart University</div></div>
-          <div class="info-item"><div class="k">Based in</div><div class="v">Thailand</div></div>
+          <div class="info-item"><div class="k"><span class="l-th">อายุ</span><span class="l-en">Age</span></div><div class="v"><span class="l-th">25 ปี</span><span class="l-en">25 years old</span></div></div>
+          <div class="info-item"><div class="k"><span class="l-th">วุฒิการศึกษา</span><span class="l-en">Degree</span></div><div class="v"><span class="l-th">วท.บ. วนศาสตร์ (วิทยาศาสตร์ชีวภาพป่าไม้)</span><span class="l-en">B.Sc. Forestry (Forest Biology)</span></div></div>
+          <div class="info-item"><div class="k"><span class="l-th">มหาวิทยาลัย</span><span class="l-en">University</span></div><div class="v"><span class="l-th">มหาวิทยาลัยเกษตรศาสตร์</span><span class="l-en">Kasetsart University</span></div></div>
+          <div class="info-item"><div class="k"><span class="l-th">ฐานที่ตั้ง</span><span class="l-en">Based in</span></div><div class="v"><span class="l-th">ประเทศไทย</span><span class="l-en">Thailand</span></div></div>
         </div>
         <div class="focus-row">
-          <span class="tag">Forest Inventory</span>
-          <span class="tag">Conservation Photography</span>
-          <span class="tag">Wildlife Ecology</span>
+          <span class="tag"><span class="l-th">สำรวจทรัพยากรป่าไม้</span><span class="l-en">Forest Inventory</span></span>
+          <span class="tag"><span class="l-th">ภาพถ่ายเพื่อการอนุรักษ์</span><span class="l-en">Conservation Photography</span></span>
+          <span class="tag"><span class="l-th">นิเวศวิทยาสัตว์ป่า</span><span class="l-en">Wildlife Ecology</span></span>
         </div>
       </div>
     </div>
@@ -512,72 +737,72 @@ Whether conducting forest surveys, identifying bird species, or assessing biodiv
 <section id="experience">
   <div class="container">
     <div class="sec-head reveal">
-      <div class="sec-index">02 — Experience</div>
-      <h2 class="sec-title">Work <em>Experience</em></h2>
+      <div class="sec-index"><span class="l-th">02 — ประสบการณ์</span><span class="l-en">02 — Experience</span></div>
+      <h2 class="sec-title"><span class="l-th">ประสบการณ์<em>ทำงาน</em></span><span class="l-en">Work <em>Experience</em></span></h2>
     </div>
 
     <div class="exp-card glass reveal">
       <div class="exp-top">
-        <div class="exp-role">Forest Resource Survey &amp; Analysis Division</div>
-        <div class="exp-date"> พ.ศ. 2568 – ปัจจุบัน · 2025 — Present</div>
+        <div class="exp-role"><span class="l-th">ส่วนสำรวจและวิเคราะห์ทรัพยากรป่าไม้</span><span class="l-en">Forest Resource Survey &amp; Analysis Division</span></div>
+        <div class="exp-date"><span class="l-th">พ.ศ. 2568 – ปัจจุบัน</span><span class="l-en">2025 — Present</span></div>
       </div>
-      <div class="exp-org">สำนักวิจัยการอนุรักษ์ป่าไม้และพันธุ์พืช · กรมอุทยานแห่งชาติ สัตว์ป่า และพันธุ์พืช<br/>Forest &amp; Plant Conservation Research Office, Department of National Parks, Wildlife and Plant Conservation (DNP), Thailand</div>
+      <div class="exp-org"><span class="l-th">สำนักวิจัยการอนุรักษ์ป่าไม้และพันธุ์พืช · กรมอุทยานแห่งชาติ สัตว์ป่า และพันธุ์พืช</span><span class="l-en">Forest &amp; Plant Conservation Research Office, Department of National Parks, Wildlife and Plant Conservation (DNP), Thailand</span></div>
       <ul class="resp">
-        <li><span class="th2">สำรวจและจัดเก็บข้อมูลแปลงตัวอย่างทรัพยากรป่าไม้</span><br/><span class="en2">Conduct forest resource inventory and sample-plot surveys.</span></li>
-        <li><span class="th2">แปลและวิเคราะห์ภาพถ่ายดาวเทียมเพื่อจัดทำแผนที่</span><br/><span class="en2">Interpret satellite imagery and produce thematic maps.</span></li>
-        <li><span class="th2">วิเคราะห์ข้อมูลด้านป่าไม้และทรัพยากรธรรมชาติ</span><br/><span class="en2">Analyze forestry and natural resource data.</span></li>
-        <li><span class="th2">สนับสนุนการจัดทำฐานข้อมูลและรายงานด้านการอนุรักษ์</span><br/><span class="en2">Support the development of databases and conservation-related reports.</span></li>
+        <li><span class="th2 l-th">สำรวจและจัดเก็บข้อมูลแปลงตัวอย่างทรัพยากรป่าไม้</span><span class="en2 l-en">Conduct forest resource inventory and sample-plot surveys.</span></li>
+        <li><span class="th2 l-th">แปลและวิเคราะห์ภาพถ่ายดาวเทียมเพื่อจัดทำแผนที่</span><span class="en2 l-en">Interpret satellite imagery and produce thematic maps.</span></li>
+        <li><span class="th2 l-th">วิเคราะห์ข้อมูลด้านป่าไม้และทรัพยากรธรรมชาติ</span><span class="en2 l-en">Analyze forestry and natural resource data.</span></li>
+        <li><span class="th2 l-th">สนับสนุนการจัดทำฐานข้อมูลและรายงานด้านการอนุรักษ์</span><span class="en2 l-en">Support the development of databases and conservation-related reports.</span></li>
       </ul>
     </div>
 
     <div class="exp-card glass reveal">
       <div class="exp-top">
-        <div class="exp-role">Field Agent — Koltiva</div>
-        <div class="exp-date">พ.ศ. 2567 · 2024</div>
+        <div class="exp-role"><span class="l-th">เจ้าหน้าที่ภาคสนาม — Koltiva</span><span class="l-en">Field Agent — Koltiva</span></div>
+        <div class="exp-date"><span class="l-th">พ.ศ. 2567</span><span class="l-en">2024</span></div>
       </div>
-      <div class="exp-org">เก็บข้อมูลภาคสนามด้านการเกษตร<br/>Agricultural field data collection</div>
+      <div class="exp-org"><span class="l-th">เก็บข้อมูลภาคสนามด้านการเกษตร</span><span class="l-en">Agricultural field data collection</span></div>
       <ul class="resp">
-        <li><span class="th2">ลงพื้นที่เก็บแบบสอบถามจากเกษตรกรและสำรวจแปลงการทำเกษตรกรรม</span><br/><span class="en2">Conducted field visits to collect questionnaires from farmers and survey agricultural plots.</span></li>
+        <li><span class="th2 l-th">ลงพื้นที่เก็บแบบสอบถามจากเกษตรกรและสำรวจแปลงการทำเกษตรกรรม</span><span class="en2 l-en">Conducted field visits to collect questionnaires from farmers and survey agricultural plots.</span></li>
       </ul>
     </div>
 
-    <div class="subhead reveal"><h3>Field Experience</h3><div class="line"></div></div>
-    <p class="sec-desc reveal" style="margin-top:-10px;margin-bottom:24px">ประสบการณ์ภาคสนามในการสำรวจ<br/><span style="color:#6f857a">Field experience in forest &amp; wildlife surveys</span></p>
-    <div class="field-grid" id="fieldGrid"></div>
+    <div class="subhead reveal"><h3><span class="l-th">ประสบการณ์ภาคสนาม</span><span class="l-en">Field Experience</span></h3><div class="line"></div></div>
+    <p class="sec-desc reveal" style="margin-top:-10px;margin-bottom:24px"><span class="l-th">ประสบการณ์ภาคสนามในการสำรวจ</span><span class="l-en">Field experience in forest &amp; wildlife surveys</span></p>
+    <div class="sv-rows reveal" id="fieldMarquee"></div>
 
-    <div class="subhead reveal" style="margin-top:56px"><h3>Leadership &amp; Volunteer Experience</h3><div class="line"></div></div>
-    <p class="sec-desc reveal" style="margin-top:-10px;margin-bottom:24px">ประสบการณ์กิจกรรมและความเป็นผู้นำ<br/><span style="color:#6f857a">Leadership roles and volunteer activities</span></p>
-
-    <div class="exp-card glass reveal">
-      <div class="exp-top">
-        <div class="exp-role">President — Student Union (Forest Biology Major)</div>
-        <div class="exp-date">พ.ศ. 2567 · 2024</div>
-      </div>
-      <div class="exp-org">คณะวนศาสตร์ มหาวิทยาลัยเกษตรศาสตร์<br/>Faculty of Forestry, Kasetsart University</div>
-      <ul class="resp">
-        <li><span class="th2">ประสานงานระหว่างนิสิตกับอาจารย์ และจัดโครงการกิจกรรมต่าง ๆ ของสโมสร เช่น รับน้อง สอนน้องร้องเพลง วิ่งประเพณี ติววิชาเคมีทั่วไป เป็นต้น</span><br/><span class="en2">Coordinated between students and faculty, and organized various club activities and projects, such as freshman orientation, peer mentoring, the traditional run, and general chemistry tutoring sessions, among others.</span></li>
-      </ul>
-    </div>
+    <div class="subhead reveal" style="margin-top:56px"><h3><span class="l-th">ประสบการณ์ผู้นำและอาสาสมัคร</span><span class="l-en">Leadership &amp; Volunteer Experience</span></h3><div class="line"></div></div>
+    <p class="sec-desc reveal" style="margin-top:-10px;margin-bottom:24px"><span class="l-th">ประสบการณ์กิจกรรมและความเป็นผู้นำ</span><span class="l-en">Leadership roles and volunteer activities</span></p>
 
     <div class="exp-card glass reveal">
       <div class="exp-top">
-        <div class="exp-role">Committee Member</div>
-        <div class="exp-date">พ.ศ. 2564 – 2567 · 2021 — 2024</div>
+        <div class="exp-role"><span class="l-th">ประธานสโมสรนิสิต สาขาวิทยาศาสตร์ชีวภาพป่าไม้</span><span class="l-en">President — Student Union (Forest Biology Major)</span></div>
+        <div class="exp-date"><span class="l-th">พ.ศ. 2567</span><span class="l-en">2024</span></div>
       </div>
-      <div class="exp-org">ชมรมอนุรักษ์ธรรมชาติและทรัพยากรธรรมชาติ มหาวิทยาลัยเกษตรศาสตร์<br/>The Association for Conservation of Nature and Natural Resources, Kasetsart University</div>
+      <div class="exp-org"><span class="l-th">คณะวนศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</span><span class="l-en">Faculty of Forestry, Kasetsart University</span></div>
       <ul class="resp">
-        <li><span class="th2">วางแผนและจัดทำโครงการค่ายกิจกรรมของชมรมกว่า 12 โครงการ</span><br/><span class="en2">Planned and organized more than 12 of the club's camp and activity projects.</span></li>
+        <li><span class="th2 l-th">ประสานงานระหว่างนิสิตกับอาจารย์ และจัดโครงการกิจกรรมต่าง ๆ ของสโมสร เช่น รับน้อง สอนน้องร้องเพลง วิ่งประเพณี ติววิชาเคมีทั่วไป เป็นต้น</span><span class="en2 l-en">Coordinated between students and faculty, and organized various club activities and projects, such as freshman orientation, peer mentoring, the traditional run, and general chemistry tutoring sessions, among others.</span></li>
       </ul>
     </div>
 
     <div class="exp-card glass reveal">
       <div class="exp-top">
-        <div class="exp-role">President — 11th Pho Rak Conservation Camp</div>
-        <div class="exp-date">พ.ศ. 2564 · 2021</div>
+        <div class="exp-role"><span class="l-th">กรรมการชมรม</span><span class="l-en">Committee Member</span></div>
+        <div class="exp-date"><span class="l-th">พ.ศ. 2564 – 2567</span><span class="l-en">2021 — 2024</span></div>
       </div>
-      <div class="exp-org">ชมรมอนุรักษ์ธรรมชาติและทรัพยากรธรรมชาติ มหาวิทยาลัยเกษตรศาสตร์<br/>The Association for Conservation of Nature and Natural Resources, Kasetsart University</div>
+      <div class="exp-org"><span class="l-th">ชมรมอนุรักษ์ธรรมชาติและทรัพยากรธรรมชาติ มหาวิทยาลัยเกษตรศาสตร์</span><span class="l-en">The Association for Conservation of Nature and Natural Resources, Kasetsart University</span></div>
       <ul class="resp">
-        <li><span class="th2">บริหารทีมงาน 25 คน และวางแผนดำเนินกิจกรรมเพื่อปลูกฝังจิตสำนึกด้านการอนุรักษ์ทรัพยากรและสิ่งแวดล้อม</span><br/><span class="en2">Led a team of 25 and planned the program to build awareness of natural-resource and environmental conservation.</span></li>
+        <li><span class="th2 l-th">วางแผนและจัดทำโครงการค่ายกิจกรรมของชมรมกว่า 12 โครงการ</span><span class="en2 l-en">Planned and organized more than 12 of the club's camp and activity projects.</span></li>
+      </ul>
+    </div>
+
+    <div class="exp-card glass reveal">
+      <div class="exp-top">
+        <div class="exp-role"><span class="l-th">ประธานค่ายอนุรักษ์ “พอรักษ์” ครั้งที่ 11</span><span class="l-en">President — 11th Pho Rak Conservation Camp</span></div>
+        <div class="exp-date"><span class="l-th">พ.ศ. 2564</span><span class="l-en">2021</span></div>
+      </div>
+      <div class="exp-org"><span class="l-th">ชมรมอนุรักษ์ธรรมชาติและทรัพยากรธรรมชาติ มหาวิทยาลัยเกษตรศาสตร์</span><span class="l-en">The Association for Conservation of Nature and Natural Resources, Kasetsart University</span></div>
+      <ul class="resp">
+        <li><span class="th2 l-th">บริหารทีมงาน 25 คน และวางแผนดำเนินกิจกรรมเพื่อปลูกฝังจิตสำนึกด้านการอนุรักษ์ทรัพยากรและสิ่งแวดล้อม</span><span class="en2 l-en">Led a team of 25 and planned the program to build awareness of natural-resource and environmental conservation.</span></li>
       </ul>
     </div>
   </div>
@@ -587,9 +812,9 @@ Whether conducting forest surveys, identifying bird species, or assessing biodiv
 <section id="skills">
   <div class="container">
     <div class="sec-head reveal">
-      <div class="sec-index">03 — Skills</div>
-      <h2 class="sec-title">Skills &amp; <em>Expertise</em></h2>
-      <p class="sec-desc">ทักษะและความเชี่ยวชาญที่ใช้ในงานสำรวจ อนุรักษ์ และถ่ายภาพธรรมชาติ<br/><span style="color:#6f857a">A blend of field science, geospatial technology and visual storytelling.</span></p>
+      <div class="sec-index"><span class="l-th">03 — ทักษะ</span><span class="l-en">03 — Skills</span></div>
+      <h2 class="sec-title"><span class="l-th">ทักษะและ<em>ความเชี่ยวชาญ</em></span><span class="l-en">Skills &amp; <em>Expertise</em></span></h2>
+      <p class="sec-desc"><span class="l-th">ทักษะและความเชี่ยวชาญที่ใช้ในงานสำรวจ อนุรักษ์ และถ่ายภาพธรรมชาติ</span><span class="l-en">A blend of field science, geospatial technology and visual storytelling.</span></p>
     </div>
     <div class="skills-grid" id="skillsGrid"></div>
 
@@ -607,12 +832,15 @@ Whether conducting forest surveys, identifying bird species, or assessing biodiv
 <section id="photography">
   <div class="container">
     <div class="sec-head reveal">
-      <div class="sec-index">04 — Photography</div>
-      <h2 class="sec-title">Photo<em>graphy</em></h2>
-      <p class="sec-desc">แกลเลอรีภาพธรรมชาติ สัตว์ป่า และภูมิทัศน์ <br/><span style="color:#6f857a">A gallery of nature, wildlife and landscape photography </span></p>
+      <div class="sec-index"><span class="l-th">04 — ภาพถ่าย</span><span class="l-en">04 — Photography</span></div>
+      <h2 class="sec-title"><span class="l-th">ภาพ<em>ถ่าย</em></span><span class="l-en">Photo<em>graphy</em></span></h2>
+      <p class="sec-desc"><span class="l-th">แกลเลอรีภาพธรรมชาติ สัตว์ป่า และภูมิทัศน์ </span><span class="l-en">A gallery of nature, wildlife and landscape photography </span></p>
     </div>
-    <p class="sec-desc" style="max-width:900px;margin-top:-24px;margin-bottom:40px">ปัจจุบันโลกกำลังเผชิญกับการเปลี่ยนแปลงของสภาพภูมิอากาศและสิ่งแวดล้อมที่เกิดขึ้นอย่างรวดเร็ว ส่งผลให้สิ่งมีชีวิตและระบบนิเวศจำนวนมากต้องเผชิญกับความท้าทาย แม้ว่าการเปลี่ยนแปลงบางประการจะนำมาซึ่งโอกาสใหม่ ๆ แต่อีกหลายสิ่งอาจสูญหายไปอย่างไม่อาจหวนคืนได้<br/><br/>เพื่อบันทึกและถ่ายทอดความงดงาม คุณค่า และเรื่องราวของธรรมชาติที่ได้พบเห็นระหว่างการเดินทาง ผมหวังว่าภาพถ่ายเหล่านี้จะช่วยสร้างความตระหนักรู้ กระตุ้นให้ผู้คนเห็นความสำคัญของทรัพยากรธรรมชาติ และร่วมกันขับเคลื่อนการอนุรักษ์อย่างยั่งยืน<br/><br/><span style="color:#6f857a">Today, the world is experiencing rapid climate and environmental change, placing countless species and ecosystems under increasing pressure. While some changes may create new opportunities, many others could lead to irreversible loss.<br/><br/>Through my travels, I seek to document and share the beauty, value, and stories of the natural world. I hope these photographs will inspire greater awareness, encourage people to recognize the importance of our natural resources, and contribute to collective efforts toward a more sustainable future.</span></p>
-    <div class="gallery" id="gallery"></div>
+    <p class="sec-desc" style="max-width:900px;margin-top:-24px;margin-bottom:40px"><span class="l-th">ปัจจุบันโลกกำลังเผชิญกับการเปลี่ยนแปลงของสภาพภูมิอากาศและสิ่งแวดล้อมที่เกิดขึ้นอย่างรวดเร็ว ส่งผลให้สิ่งมีชีวิตและระบบนิเวศจำนวนมากต้องเผชิญกับความท้าทาย แม้ว่าการเปลี่ยนแปลงบางประการจะนำมาซึ่งโอกาสใหม่ ๆ แต่อีกหลายสิ่งอาจสูญหายไปอย่างไม่อาจหวนคืนได้<br/><br/>เพื่อบันทึกและถ่ายทอดความงดงาม คุณค่า และเรื่องราวของธรรมชาติที่ได้พบเห็นระหว่างการเดินทาง ผมหวังว่าภาพถ่ายเหล่านี้จะช่วยสร้างความตระหนักรู้ กระตุ้นให้ผู้คนเห็นความสำคัญของทรัพยากรธรรมชาติ และร่วมกันขับเคลื่อนการอนุรักษ์อย่างยั่งยืน</span><span class="l-en">Today, the world is experiencing rapid climate and environmental change, placing countless species and ecosystems under increasing pressure. While some changes may create new opportunities, many others could lead to irreversible loss.<br/><br/>Through my travels, I seek to document and share the beauty, value, and stories of the natural world. I hope these photographs will inspire greater awareness, encourage people to recognize the importance of our natural resources, and contribute to collective efforts toward a more sustainable future.</span></p>
+    <div class="sphere-wrap reveal">
+      <div class="sphere" id="photoSphere"></div>
+      <p class="sphere-hint"><span class="l-th">ลากเพื่อหมุน · คลิกที่ภาพเพื่อดูขนาดเต็ม</span><span class="l-en">Drag to rotate · click a photo to open it</span></p>
+    </div>
   </div>
 </section>
 
@@ -620,8 +848,8 @@ Whether conducting forest surveys, identifying bird species, or assessing biodiv
 <section id="certificates">
   <div class="container">
     <div class="sec-head reveal">
-      <div class="sec-index">05 — Certificates</div>
-      <h2 class="sec-title">Certi<em>ficates</em></h2>
+      <div class="sec-index"><span class="l-th">05 — ใบรับรอง</span><span class="l-en">05 — Certificates</span></div>
+      <h2 class="sec-title"><span class="l-th">ใบ<em>รับรอง</em></span><span class="l-en">Certi<em>ficates</em></span></h2>
     </div>
     <div class="cert-showcase reveal">
       <div class="cert-media">
@@ -641,13 +869,13 @@ Whether conducting forest surveys, identifying bird species, or assessing biodiv
 <section id="contact">
   <div class="container">
     <div class="sec-head reveal">
-      <div class="sec-index">06 — Contact</div>
-      <h2 class="sec-title">Get in <em>Touch</em></h2>
+      <div class="sec-index"><span class="l-th">06 — ติดต่อ</span><span class="l-en">06 — Contact</span></div>
+      <h2 class="sec-title"><span class="l-th"><em>ติดต่อ</em>ผม</span><span class="l-en">Get in <em>Touch</em></span></h2>
     </div>
     <div class="contact-wrap">
       <div class="contact-card glass reveal rl">
         <h3>Let's connect</h3>
-        <p>For collaborations & photography commission.</p>
+        <p>For collaborations &amp; photography commission.</p>
         <div class="contact-list">
           <a class="contact-link" href="mailto:methunpm2001@gmail.com">
             <span class="ci"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><polyline points="3 7 12 13 21 7"></polyline></svg></span>
@@ -703,48 +931,48 @@ const fieldData=[
   {img:"fieldex6",th:"ลักษณะพื้นที่แปลงตัวอย่าง",en:"Characteristics of the Sample Plot Area."}
 ];
 const skills=[
-  {name:"GIS",th:"จัดทำแผนที่เชิงพื้นที่ วิเคราะห์การใช้ประโยชน์ที่ดินและสภาพปกคลุมพื้นที่",en:"Spatial mapping, land-use & land-cover analysis for forest planning.",ic:'<path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"/><path d="M9 7v13M15 4v13"/>'},
-  {name:"SMART",th:"ใช้โปรแกรม SMART ซึ่งเป็นเครื่องมือสำหรับการติดตามและรายงานผลในการลาดตระเวนป้องกันการลักลอบล่าสัตว์ป่า",en:"Use the SMART program for Monitoring & Reporting Tool for anti-poaching patrols.",ic:'<path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/>'},
-  {name:"Forest Survey",th:"สำรวจป่าไม้ วัดขนาดต้นไม้ ประเมินความหลากหลายและมวลชีวภาพ",en:"Forest inventory, tree measurement & biomass estimation.",ic:'<path d="M12 2L7 10h3l-4 7h5v5h2v-5h5l-4-7h3z"/>'},
-  {name:"Bird Identification",th:"จำแนกชนิดพันธุ์นกจากลักษณะ พฤติกรรม และเสียงร้อง",en:"Identifying bird species by plumage, behavior & vocalization.",ic:'<path d="M16 7h.01"/><path d="M20 8c0 4-3 6-6 7l-7 6v-4c0-6 4-11 9-11a4 4 0 0 1 4 2z"/><path d="M9 12L4 9"/>'},
-  {name:"Photography",th:"ถ่ายภาพธรรมชาติ สัตว์ป่า และภูมิทัศน์ เพื่อการอนุรักษ์",en:"Wildlife, nature & landscape photography for conservation.",ic:'<path d="M3 8a2 2 0 0 1 2-2h2l2-2h6l2 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="4"/>'},
-  {name:"Drone",th:"ใช้อากาศยานไร้คนขับสำรวจพื้นที่และจัดทำแผนที่ทางอากาศ",en:"Aerial surveys and drone mapping.",ic:'<circle cx="12" cy="12" r="2.5"/><path d="M12 9.5V6M12 14.5V18M9.5 12H6M14.5 12H18"/><circle cx="5" cy="5" r="2.5"/><circle cx="19" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/>'},
-  {name:"Scuba Open Water",th:"ได้รับการรับรอง NAUI Open Water Diver",en:"Certified NAUI Open Water Diver.",ic:'<path d="M3 15c1.5 0 1.5 1.5 3 1.5S9 15 10.5 15s1.5 1.5 3 1.5S15 15 16.5 15s1.5 1.5 3 1.5"/><path d="M3 19c1.5 0 1.5 1.5 3 1.5S9 19 10.5 19s1.5 1.5 3 1.5S15 19 16.5 19s1.5 1.5 3 1.5"/><circle cx="12" cy="6" r="2"/><path d="M12 8v3"/>'}
+  {name:"GIS",nameTh:"ระบบสารสนเทศภูมิศาสตร์ (GIS)",th:"จัดทำแผนที่เชิงพื้นที่ วิเคราะห์การใช้ประโยชน์ที่ดินและสภาพปกคลุมพื้นที่",en:"Spatial mapping, land-use & land-cover analysis for forest planning.",ic:'<path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"/><path d="M9 7v13M15 4v13"/>'},
+  {name:"SMART",nameTh:"ลาดตระเวนเชิงคุณภาพ (SMART)",th:"ใช้โปรแกรม SMART ซึ่งเป็นเครื่องมือสำหรับการติดตามและรายงานผลในการลาดตระเวนป้องกันการลักลอบล่าสัตว์ป่า",en:"Use SMART (Spatial Monitoring and Reporting Tool) for anti-poaching patrols.",ic:'<path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/>'},
+  {name:"Forest Survey",nameTh:"สำรวจทรัพยากรป่าไม้",th:"สำรวจป่าไม้ วัดขนาดต้นไม้ ประเมินความหลากหลายและมวลชีวภาพ",en:"Forest inventory, tree measurement & biomass estimation.",ic:'<path d="M12 2L7 10h3l-4 7h5v5h2v-5h5l-4-7h3z"/>'},
+  {name:"Bird Identification",nameTh:"จำแนกชนิดพันธุ์นก",th:"จำแนกชนิดพันธุ์นกจากลักษณะ พฤติกรรม และเสียงร้อง",en:"Identifying bird species by plumage, behavior & vocalization.",ic:'<path d="M16 7h.01"/><path d="M20 8c0 4-3 6-6 7l-7 6v-4c0-6 4-11 9-11a4 4 0 0 1 4 2z"/><path d="M9 12L4 9"/>'},
+  {name:"Photography",nameTh:"การถ่ายภาพ",th:"ถ่ายภาพธรรมชาติ สัตว์ป่า และภูมิทัศน์ เพื่อการอนุรักษ์",en:"Wildlife, nature & landscape photography for conservation.",ic:'<path d="M3 8a2 2 0 0 1 2-2h2l2-2h6l2 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="4"/>'},
+  {name:"Drone",nameTh:"อากาศยานไร้คนขับ",th:"ใช้อากาศยานไร้คนขับสำรวจพื้นที่และจัดทำแผนที่ทางอากาศ",en:"Aerial surveys and drone mapping.",ic:'<circle cx="12" cy="12" r="2.5"/><path d="M12 9.5V6M12 14.5V18M9.5 12H6M14.5 12H18"/><circle cx="5" cy="5" r="2.5"/><circle cx="19" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/>'},
+  {name:"Scuba Open Water",nameTh:"ดำน้ำ Open Water",th:"ได้รับการรับรอง NAUI Open Water Diver",en:"Certified NAUI Open Water Diver.",ic:'<path d="M3 15c1.5 0 1.5 1.5 3 1.5S9 15 10.5 15s1.5 1.5 3 1.5S15 15 16.5 15s1.5 1.5 3 1.5"/><path d="M3 19c1.5 0 1.5 1.5 3 1.5S9 19 10.5 19s1.5 1.5 3 1.5S15 19 16.5 19s1.5 1.5 3 1.5"/><circle cx="12" cy="6" r="2"/><path d="M12 8v3"/>'}
 ];
 const allGalleryData={
-  gal1:{th:"วาฬบรูด้า Bryde's Whale",en:"(<i>Balaenoptera edeni</i>)"},
-  gal2:{th:"แมงมุมใยกลม Orb-weaver spider",en:"(วงศ์ <i>Araneidae</i>)"},
-  gal3:{th:"นกกาบบัว Painted Stork",en:"(<i>Mycteria leucocephala</i>)"},
-  gal4:{th:"ป่าสนในสายหมอกยามเช้า Pine forest in the morning mist",en:""},
-  gal5:{th:"นกยางกรอกพันธุ์ชวา Javan pond heron",en:"(<i>Ardeola speciosa</i>)"},
-  gal6:{th:"นกชายเลนปากช้อน Spoon-billed Sandpiper",en:"(<i>Calidris pygmaea</i>)"},
-  gal7:{th:"นกชายเลนปากช้อน Spoon-billed Sandpiper",en:"(<i>Calidris pygmaea</i>)"},
-  gal8:{th:"นกกระจิบหญ้าสีเรียบ Plain Prinia",en:"(<i>Prinia disadorna</i>)"},
-  gal9:{th:"นกบู๊บบี้ตีนแดง Red-footed Booby",en:"(<i>Sula sula</i>)"},
-  gal10:{th:"นกจาบคาหัวเกาลัด Chestnut-headed Bee-eater",en:"(<i>Merops leschenaulti</i>)"},
-  gal11:{th:"นกแว่นตาขาวหลังเขียว Warbling white eye",en:"(<i>Zosterops simplex</i>)"},
-  gal12:{th:"นกอีเสือสีน้ำตาล Brown Shrike",en:"(<i>Lanius cristatus</i>)"},
-  gal13:{th:"นกกะเต็นใหญ่ธรรมดา Stork-billed Kingfisher",en:"(<i>Pelargopsis capensis</i>)"},
-  gal14:{th:"กลุ่มผีเสื้อดูดน้ำแร่ธาตุ Butterflies mud-puddling on sand",en:""},
-  gal15:{th:"ตะกอง Chinese Water Dragon",en:"(<i>Physignathus cocincinus</i>)"},
-  gal16:{th:"นกกระจาบทอง Asian Golden Weaver",en:"(<i>Ploceus hypoxanthus</i>)"},
-  gal17:{th:"นกยูงไทย ตัวผู้ Green Peafowl, male",en:"(<i>Pavo muticus</i>)"},
-  gal18:{th:"ชะนีมือขาว White-handed Gibbon",en:"(<i>Hylobates lar</i>)"},
-  gal19:{th:"ปูก้ามดาบ Fiddler crab",en:"(<i>Uca</i> sp.)"},
-  gal20:{th:"หยาดน้ำค้าง Sundew",en:"(<i>Drosera</i> sp.)"},
-  gal21:{th:"ปูก้ามดาบ Fiddler crab",en:"(<i>Uca</i> sp.)"},
-  gal22:{th:"นกอีเสือหลังเทา Grey-backed Shrike",en:"(<i>Lanius tephronotus</i>)"},
-  gal23:{th:"ฝูงนกหัวโตหลังจุดสีทอง Pacific golden plover",en:"(<i>Pluvialis fulva</i>)"},
-  gal24:{th:"ใบไม้สีแดงยามแสงส่องยามเช้า Red leaves lit by morning light",en:""},
-  gal25:{th:"กิ้งก่าแก้ว Forest crested lizard",en:"(<i>Calotes emma</i>)"},
-  gal26:{th:"นกกก Great Hornbill",en:"(<i>Buceros bicornis</i>)"},
-  gal27:{th:"นกเขนน้อยปีกแถบขาว Bar-winged Flycatcher-shrike",en:"(<i>Hemipus picatus</i>)"},
-  gal28:{th:"นกแก๊ก Oriental Pied Hornbill",en:"(<i>Anthracoceros albirostris</i>)"},
-  gal29:{th:"นกกระเต็นน้อยธรรมดาเกาะป้ายเตือนริมน้ำ Common Kingfisher perched on a warning sign",en:"(<i>Alcedo atthis</i>)"},
-  gal30:{th:"นกเงือกกรามช้าง Great Hornbill",en:"(<i>Buceros bicornis</i>)"},
-  gal31:{th:"ป่าสนและสายหมอก",en:""},
-  gal32:{th:"นกหัวโตทรายเล็ก Tibetan Sand-Plover",en:"(<i>Anarhynchus atrifrons</i>)"},
-  gal33:{th:"Depth of field",en:""}
+  gal1:{th:"วาฬบรูด้า",en:"Bryde's Whale",sci:"(<i>Balaenoptera edeni</i>)"},
+  gal2:{th:"แมงมุมใยกลม",en:"Orb-weaver spider",sci:"(วงศ์ Araneidae)"},
+  gal3:{th:"นกกาบบัว",en:"Painted Stork",sci:"(<i>Mycteria leucocephala</i>)"},
+  gal4:{th:"ป่าสนในสายหมอกยามเช้า",en:"Pine forest in the morning mist",sci:""},
+  gal5:{th:"นกยางกรอกพันธุ์ชวา",en:"Javan Pond Heron",sci:"(<i>Ardeola speciosa</i>)"},
+  gal6:{th:"นกชายเลนปากช้อน",en:"Spoon-billed Sandpiper",sci:"(<i>Calidris pygmaea</i>)"},
+  gal7:{th:"นกชายเลนปากช้อน",en:"Spoon-billed Sandpiper",sci:"(<i>Calidris pygmaea</i>)"},
+  gal8:{th:"นกกระจิบหญ้าสีเรียบ",en:"Plain Prinia",sci:"(<i>Prinia inornata</i>)"},
+  gal9:{th:"นกบูบี้ตีนแดง",en:"Red-footed Booby",sci:"(<i>Sula sula</i>)"},
+  gal10:{th:"นกจาบคาหัวเกาลัด",en:"Chestnut-headed Bee-eater",sci:"(<i>Merops leschenaulti</i>)"},
+  gal11:{th:"นกแว่นตาขาวหลังเขียว",en:"Warbling White-eye",sci:"(<i>Zosterops simplex</i>)"},
+  gal12:{th:"นกอีเสือสีน้ำตาล",en:"Brown Shrike",sci:"(<i>Lanius cristatus</i>)"},
+  gal13:{th:"นกกะเต็นใหญ่ธรรมดา",en:"Stork-billed Kingfisher",sci:"(<i>Pelargopsis capensis</i>)"},
+  gal14:{th:"กลุ่มผีเสื้อดูดน้ำแร่ธาตุ",en:"Butterflies mud-puddling on sand",sci:""},
+  gal15:{th:"ตะกอง",en:"Chinese Water Dragon",sci:"(<i>Physignathus cocincinus</i>)"},
+  gal16:{th:"นกกระจาบทอง",en:"Asian Golden Weaver",sci:"(<i>Ploceus hypoxanthus</i>)"},
+  gal17:{th:"นกยูงไทย ตัวผู้",en:"Green Peafowl, male",sci:"(<i>Pavo muticus</i>)"},
+  gal18:{th:"ชะนีมือขาว",en:"White-handed Gibbon",sci:"(<i>Hylobates lar</i>)"},
+  gal19:{th:"ปูก้ามดาบ",en:"Fiddler crab",sci:"(<i>Uca</i> sp.)"},
+  gal20:{th:"หยาดน้ำค้าง",en:"Sundew",sci:"(<i>Drosera</i> sp.)"},
+  gal21:{th:"ปูก้ามดาบ",en:"Fiddler crab",sci:"(<i>Uca</i> sp.)"},
+  gal22:{th:"นกอีเสือหลังเทา",en:"Grey-backed Shrike",sci:"(<i>Lanius tephronotus</i>)"},
+  gal23:{th:"ฝูงนกหัวโตหลังจุดสีทอง",en:"Pacific Golden Plover",sci:"(<i>Pluvialis fulva</i>)"},
+  gal24:{th:"ใบไม้สีแดงยามแสงส่องยามเช้า",en:"Red leaves lit by morning light",sci:""},
+  gal25:{th:"กิ้งก่าแก้ว",en:"Forest Crested Lizard",sci:"(<i>Calotes emma</i>)"},
+  gal26:{th:"นกกก",en:"Great Hornbill",sci:"(<i>Buceros bicornis</i>)"},
+  gal27:{th:"นกเขนน้อยปีกแถบขาว",en:"Bar-winged Flycatcher-shrike",sci:"(<i>Hemipus picatus</i>)"},
+  gal28:{th:"นกแก๊ก",en:"Oriental Pied Hornbill",sci:"(<i>Anthracoceros albirostris</i>)"},
+  gal29:{th:"นกกระเต็นน้อยธรรมดาเกาะป้ายเตือนริมน้ำ",en:"Common Kingfisher perched on a warning sign",sci:"(<i>Alcedo atthis</i>)"},
+  gal30:{th:"นกเงือกกรามช้าง",en:"Wreathed Hornbill",sci:"(<i>Rhyticeros undulatus</i>)"},
+  gal31:{th:"ป่าสนและสายหมอก",en:"Pine forest and mist",sci:""},
+  gal32:{th:"นกหัวโตทรายเล็ก",en:"Tibetan Sand-Plover",sci:"(<i>Anarhynchus atrifrons</i>)"},
+  gal33:{th:"ระยะชัดตื้น",en:"Depth of field",sci:""}
 };
 /* Photos already shown in "Through the Lens" — excluded here to avoid duplicates */
 const featuredOnlyImgs=["gal11","gal1","gal7","gal8","gal15","gal15","gal18","gal5"];
@@ -761,38 +989,83 @@ const certData=[
 const IMG="assets/img/",TH="assets/img/thumb/";
 const zoomSVG='<span class="zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="16" y1="16" x2="21" y2="21"></line></svg></span>';
 
-/* ============ BUILD FIELD EXPERIENCE ============ */
-const fg=document.getElementById("fieldGrid");
-fieldData.forEach((f,i)=>{
-  const d=document.createElement("div");
-  d.className="field-item reveal rs d"+((i%3)+1);
-  d.innerHTML=`<img src="${TH}${f.img}.jpg" alt="${f.en}" loading="lazy"/>${zoomSVG}
-    <div class="cap"><div class="th">${f.th}</div><div class="en">${f.en}</div></div>`;
-  d.onclick=()=>openLB("field",i);
-  fg.appendChild(d);
-});
+/* ============ FIELD EXPERIENCE — SCROLL-VELOCITY MARQUEE ============
+   Ported from a framer-motion ScrollVelocity component to plain JS. Each row
+   drifts at its own constant speed; the page's scroll velocity scales that
+   speed and flips the direction, so the images surge when you scroll down and
+   run backwards when you scroll up. Two identical halves per track let the
+   transform wrap seamlessly at -50%. */
+(function(){
+  const host=document.getElementById("fieldMarquee");
+  if(!host)return;
 
-/* ============ FIELD EXPERIENCE PEEK CAROUSEL (mobile) ============ */
-function updateFieldCenter(){
-  const items=[...fg.children];
-  if(!items.length)return;
-  const gridRect=fg.getBoundingClientRect();
-  const centerX=gridRect.left+gridRect.width/2;
-  let closest=null,closestDist=Infinity;
-  items.forEach(it=>{
-    const r=it.getBoundingClientRect();
-    const dist=Math.abs((r.left+r.width/2)-centerX);
-    if(dist<closestDist){closestDist=dist;closest=it;}
+  const ROWS=[{velocity:3,items:fieldData},
+              {velocity:-3,items:[...fieldData].reverse()}];
+  const REPEAT=3;            /* copies per half — enough to span a wide screen */
+  const rows=[];
+
+  ROWS.forEach(cfg=>{
+    const row=document.createElement("div"); row.className="sv-row";
+    const track=document.createElement("div"); track.className="sv-track";
+    for(let half=0;half<2;half++){
+      for(let r=0;r<REPEAT;r++){
+        cfg.items.forEach(f=>{
+          const idx=fieldData.indexOf(f);
+          const d=document.createElement("div");
+          d.className="field-item";
+          d.innerHTML=`<img src="${TH}${f.img}.jpg" alt="${f.en}" loading="lazy"/>${zoomSVG}
+            <div class="cap"><div class="th l-th">${f.th}</div><div class="th l-en">${f.en}</div></div>`;
+          d.onclick=()=>openLB("field",idx);
+          track.appendChild(d);
+        });
+      }
+    }
+    row.appendChild(track); host.appendChild(row);
+    const state={track,velocity:cfg.velocity,baseX:0,dir:1,paused:false};
+    /* hold still while the pointer is over a row so the images can be clicked */
+    row.addEventListener("mouseenter",()=>state.paused=true);
+    row.addEventListener("mouseleave",()=>state.paused=false);
+    rows.push(state);
   });
-  items.forEach(it=>it.classList.toggle("is-center",it===closest));
-}
-let fieldScrollTimer;
-fg.addEventListener("scroll",()=>{
-  clearTimeout(fieldScrollTimer);
-  fieldScrollTimer=setTimeout(updateFieldCenter,50);
-},{passive:true});
-window.addEventListener("resize",updateFieldCenter);
-setTimeout(updateFieldCenter,150);
+
+  const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduced)return;   /* leave the rows parked */
+
+  /* wrap into the [-50%, 0] window the doubled track is built for */
+  function wrap(v){ const min=-50,range=50; return min+((((v-min)%range)+range)%range); }
+
+  let lastY=window.scrollY,lastT=0,smooth=0,raf=null,onScreen=false;
+
+  function frame(t){
+    if(!onScreen||document.hidden){ raf=null; return; }
+    const dt=lastT?Math.min(t-lastT,64):16; lastT=t;
+    const y=window.scrollY;
+    const raw=(y-lastY)/(dt/1000); lastY=y;
+    /* cheap spring: ease the measured velocity toward the raw reading */
+    smooth+=(raw-smooth)*Math.min(1,dt/1000*8);
+    /* map px/s onto the same 0..5 factor the original component used */
+    let factor=smooth/10000*5;
+    if(factor>5)factor=5; else if(factor<-5)factor=-5;
+
+    rows.forEach(r=>{
+      if(r.paused)return;
+      let moveBy=r.dir*r.velocity*(dt/1000);
+      if(factor<0)r.dir=-1; else if(factor>0)r.dir=1;
+      moveBy+=r.dir*moveBy*factor;
+      r.baseX=wrap(r.baseX+moveBy);
+      r.track.style.transform="translateX("+r.baseX+"%)";
+    });
+    raf=requestAnimationFrame(frame);
+  }
+  function start(){ if(!raf&&onScreen&&!document.hidden){ lastT=0; lastY=window.scrollY; raf=requestAnimationFrame(frame); } }
+
+  /* only animate while the section is actually on screen */
+  if("IntersectionObserver" in window){
+    new IntersectionObserver(es=>{ onScreen=es[0].isIntersecting; start(); },{rootMargin:"200px 0px"}).observe(host);
+  }else{ onScreen=true; }
+  document.addEventListener("visibilitychange",start);
+  start();
+})();
 
 /* ============ BUILD SKILLS ============ */
 const sg=document.getElementById("skillsGrid");
@@ -800,9 +1073,9 @@ skills.forEach((s,i)=>{
   const c=document.createElement("div");
   c.className="skill-card reveal rs d"+((i%4)+1);
   c.innerHTML=`<div class="skill-ic"><svg viewBox="0 0 24 24">${s.ic}</svg></div>
-    <div class="skill-name">${s.name}</div>
-    <div class="skill-th">${s.th}</div>
-    <div class="skill-en">${s.en}</div>`;
+    <div class="skill-name"><span class="l-th">${s.nameTh||s.name}</span><span class="l-en">${s.name}</span></div>
+    <div class="skill-th l-th">${s.th}</div>
+    <div class="skill-th l-en">${s.en}</div>`;
   c.addEventListener("mousemove",e=>{const r=c.getBoundingClientRect();c.style.setProperty("--mx",(e.clientX-r.left)+"px");c.style.setProperty("--my",(e.clientY-r.top)+"px");});
   sg.appendChild(c);
 });
@@ -868,15 +1141,201 @@ if(!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").
   setInterval(()=>{ if(!csHover){ csActive=(csActive+1)%featured.length; renderStack(); } },3500);
 }
 
-/* ============ BUILD GALLERY ============ */
-const gl=document.getElementById("gallery");
-galleryImgs.forEach((n,i)=>{
-  const d=document.createElement("div");
-  d.className="g-item";
-  d.innerHTML=`<img src="${TH}${n}.jpg" alt="Photograph ${i+1}" loading="lazy"/>${zoomSVG}`;
-  d.onclick=()=>openLB("gallery",i);
-  gl.appendChild(d);
-});
+/* ============ PHOTO SPHERE (gallery) ============
+   Ported from a React SphereImageGrid component to plain JS. Photos are laid
+   out with a Fibonacci distribution so they spread evenly over a sphere; the
+   sphere auto-rotates, can be dragged (with momentum), scales each photo by
+   its distance from the centre and its depth, fades out the ones swinging
+   round the back, and shrinks any that would collide on screen. Clicking a
+   photo opens the site's own lightbox rather than a second modal. */
+(function(){
+  const host=document.getElementById("photoSphere");
+  if(!host)return;
+
+  const CFG={
+    /* ---- ขนาดของทรงกลม — แก้ 3 ค่านี้ ----
+       containerMax : ความกว้างสูงสุดของกล่อง (px) เพิ่มแล้วทรงกลมใหญ่ขึ้นทั้งหมด
+       radiusRatio  : รัศมี = ความกว้างกล่อง × ค่านี้ เพิ่มแล้ววงกว้างขึ้น ภาพห่างกันขึ้น
+                      (อย่าเกิน ~0.42 ไม่งั้นภาพขอบจะล้นออกนอกกล่อง)
+       baseImageScale : ขนาดภาพ = ความกว้างกล่อง × ค่านี้ */
+    containerMax:860,
+    radiusRatio:0.40,
+    dragSensitivity:0.8,
+    momentumDecay:0.96,
+    maxRotationSpeed:6,
+    baseImageScale:0.17,
+    hoverScale:1.2,
+    perspective:1000,
+    autoRotate:true,
+    autoRotateSpeed:0.2
+  };
+  const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let size=0, radius=0, baseSize=0;
+  function measure(){
+    const avail=host.parentElement.clientWidth||600;
+    size=Math.max(280,Math.min(avail,CFG.containerMax));
+    radius=size*CFG.radiusRatio;
+    baseSize=size*CFG.baseImageScale;
+    host.style.width=size+"px";
+    host.style.height=size+"px";
+    host.style.perspective=CFG.perspective+"px";
+  }
+  measure();
+
+  /* ---- Fibonacci sphere distribution (fixed once, so the layout is stable) ---- */
+  /* the sphere shows the whole photo set — the masonry grid used to skip the
+     ones already in "Through the Lens", but on a sphere there is room */
+  const sphereImgs=Array.from({length:33},(_,i)=>"gal"+(i+1));
+  const spherePos=(function(){
+    const out=[], count=sphereImgs.length;
+    const golden=(1+Math.sqrt(5))/2, inc=2*Math.PI/golden;
+    for(let i=0;i<count;i++){
+      const t=i/count;
+      let phi=Math.acos(1-2*t)*(180/Math.PI);
+      let theta=((inc*i)*(180/Math.PI))%360;
+      /* push points a little further toward the poles so the top and bottom
+         of the sphere don't end up bare */
+      const poleBonus=Math.pow(Math.abs(phi-90)/90,0.6)*35;
+      phi = phi<90 ? Math.max(5,phi-poleBonus) : Math.min(175,phi+poleBonus);
+      phi = 15+(phi/180)*150;
+      theta=(theta+(Math.random()-0.5)*20)%360;
+      phi=Math.max(0,Math.min(180,phi+(Math.random()-0.5)*10));
+      out.push({theta,phi});
+    }
+    return out;
+  })();
+
+  /* ---- nodes ---- */
+  const nodes=sphereImgs.map((n,i)=>{
+    const d=document.createElement("div");
+    d.className="sphere-node";
+    d.innerHTML=`<div class="ring"><img src="${TH}${n}.jpg" alt="Photograph ${i+1}" `
+      +`loading="${i<6?"eager":"lazy"}" draggable="false"/></div>`;
+    d.addEventListener("mouseenter",()=>{hovered=i;});
+    d.addEventListener("mouseleave",()=>{if(hovered===i)hovered=null;});
+    d.addEventListener("click",()=>{ if(!dragMoved) openLB("sphere",i); });
+    host.appendChild(d);
+    return d;
+  });
+
+  const rad=d=>d*(Math.PI/180);
+  const normalize=a=>{while(a>180)a-=360;while(a<-180)a+=360;return a;};
+  const clampSpeed=v=>Math.max(-CFG.maxRotationSpeed,Math.min(CFG.maxRotationSpeed,v));
+
+  let rotX=15, rotY=15, velX=0, velY=0;
+  let dragging=false, dragMoved=false, lastPt={x:0,y:0}, hovered=null;
+  const world=new Array(nodes.length);
+
+  function layout(){
+    const cx=Math.cos(rad(rotX)), sx=Math.sin(rad(rotX));
+    const cy=Math.cos(rad(rotY)), sy=Math.sin(rad(rotY));
+    for(let i=0;i<spherePos.length;i++){
+      const pos=spherePos[i];
+      const pr=rad(pos.phi), tr=rad(pos.theta);
+      let x=radius*Math.sin(pr)*Math.cos(tr);
+      let y=radius*Math.cos(pr);
+      let z=radius*Math.sin(pr)*Math.sin(tr);
+      /* Y-axis (horizontal drag), then X-axis (vertical drag) */
+      const x1=x*cy+z*sy, z1=-x*sy+z*cy; x=x1; z=z1;
+      const y2=y*cx-z*sx, z2=y*sx+z*cx;  y=y2; z=z2;
+
+      const fadeStart=-radius*0.05, fadeEnd=-radius*0.15;
+      const visible=z>fadeEnd;
+      let fade=1;
+      if(z<=fadeStart) fade=Math.max(0,(z-fadeEnd)/(fadeStart-fadeEnd));
+
+      const isPole=pos.phi<30||pos.phi>150;
+      const distRatio=Math.min(Math.sqrt(x*x+y*y)/radius,1);
+      const centerScale=Math.max(0.3,1-distRatio*(isPole?0.4:0.7));
+      const depthScale=(z+radius)/(2*radius);
+      world[i]={x,y,z,visible,fade,scale:centerScale*Math.max(0.5,0.8+depthScale*0.3)};
+    }
+    /* shrink anything that would overlap a neighbour on screen */
+    for(let i=0;i<world.length;i++){
+      const a=world[i]; if(!a.visible)continue;
+      let sc=a.scale;
+      for(let j=0;j<world.length;j++){
+        if(i===j)continue;
+        const b=world[j]; if(!b.visible)continue;
+        const dx=a.x-b.x, dy=a.y-b.y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        const minDist=(baseSize*sc+baseSize*b.scale)/2+10;
+        if(dist<minDist&&dist>0){
+          const overlap=minDist-dist;
+          sc=Math.min(sc,sc*Math.max(0.4,1-(overlap/minDist)*0.6));
+        }
+      }
+      a.scale=Math.max(0.25,sc);
+    }
+    /* paint */
+    for(let i=0;i<nodes.length;i++){
+      const w=world[i], el=nodes[i];
+      if(!w.visible){ el.style.display="none"; continue; }
+      const px=baseSize*w.scale;
+      const hover=hovered===i?Math.min(CFG.hoverScale,CFG.hoverScale/w.scale):1;
+      el.style.display="block";
+      el.style.width=px+"px";
+      el.style.height=px+"px";
+      el.style.left=(size/2+w.x)+"px";
+      el.style.top=(size/2+w.y)+"px";
+      el.style.opacity=w.fade;
+      el.style.transform="translate(-50%,-50%) scale("+hover+")";
+      el.style.zIndex=String(Math.round(1000+w.z));
+    }
+  }
+
+  function step(){
+    if(!dragging){
+      velX*=CFG.momentumDecay; velY*=CFG.momentumDecay;
+      if(Math.abs(velX)<0.01)velX=0;
+      if(Math.abs(velY)<0.01)velY=0;
+      let ny=rotY+clampSpeed(velY);
+      if(CFG.autoRotate&&!reduced) ny+=CFG.autoRotateSpeed;
+      rotX=normalize(rotX+clampSpeed(velX));
+      rotY=normalize(ny);
+    }
+    layout();
+  }
+
+  /* ---- run only while the sphere is on screen ---- */
+  let raf=null,onScreen=false;
+  function frame(){ if(!onScreen||document.hidden){raf=null;return;} step(); raf=requestAnimationFrame(frame); }
+  function start(){ if(!raf&&onScreen&&!document.hidden) raf=requestAnimationFrame(frame); }
+  if("IntersectionObserver" in window){
+    new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;start();},{rootMargin:"150px 0px"}).observe(host);
+  }else{ onScreen=true; }
+  document.addEventListener("visibilitychange",start);
+  layout(); start();
+
+  /* ---- drag / touch ---- */
+  function down(px,py){ dragging=true; dragMoved=false; velX=0; velY=0; lastPt={x:px,y:py}; host.classList.add("dragging"); }
+  function move(px,py){
+    if(!dragging)return;
+    const dx=px-lastPt.x, dy=py-lastPt.y;
+    if(Math.abs(dx)+Math.abs(dy)>3) dragMoved=true;   /* so a drag doesn't count as a click */
+    const rx=-dy*CFG.dragSensitivity, ry=dx*CFG.dragSensitivity;
+    rotX=normalize(rotX+clampSpeed(rx));
+    rotY=normalize(rotY+clampSpeed(ry));
+    velX=clampSpeed(rx); velY=clampSpeed(ry);
+    lastPt={x:px,y:py};
+    if(!raf)layout();
+  }
+  function up(){ dragging=false; host.classList.remove("dragging"); }
+
+  host.addEventListener("mousedown",e=>{e.preventDefault();down(e.clientX,e.clientY);});
+  document.addEventListener("mousemove",e=>move(e.clientX,e.clientY));
+  document.addEventListener("mouseup",up);
+  host.addEventListener("touchstart",e=>{const t=e.touches[0];down(t.clientX,t.clientY);},{passive:true});
+  document.addEventListener("touchmove",e=>{
+    if(!dragging)return;
+    e.preventDefault();
+    const t=e.touches[0]; move(t.clientX,t.clientY);
+  },{passive:false});
+  document.addEventListener("touchend",up);
+
+  window.addEventListener("resize",()=>{measure();layout();});
+})();
 
 /* ============ BUILD CERTIFICATES (animated stacked showcase) ============ */
 const certStack=document.getElementById("certStack"),
@@ -918,7 +1377,7 @@ function renderCert(){
   certText.classList.add("switching");
   setTimeout(()=>{
     const c=certData[certActive];
-    certText.innerHTML=`<div class="th">${c.th}</div><div class="en">${c.en}</div>`;
+    certText.innerHTML=`<div class="th l-th">${c.th}</div><div class="th l-en">${c.en}</div>`;
     certCount.innerHTML=`<b>${String(certActive+1).padStart(2,"0")}</b> / ${String(certData.length).padStart(2,"0")}`;
     certText.classList.remove("switching");
   },160);
@@ -930,8 +1389,9 @@ renderCert();
 /* ============ LIGHTBOX ============ */
 const groups={
   field:fieldData.map(f=>({src:IMG+f.img+".jpg",thumb:TH+f.img+".jpg",th:f.th,en:f.en})),
-  featured:featured.map(n=>({src:IMG+n+".jpg",thumb:TH+n+".jpg",th:allGalleryData[n]?.th,en:allGalleryData[n]?.en})),
-  gallery:galleryImgs.map(n=>({src:IMG+n+".jpg",thumb:TH+n+".jpg",th:allGalleryData[n]?.th,en:allGalleryData[n]?.en})),
+  featured:featured.map(n=>({src:IMG+n+".jpg",thumb:TH+n+".jpg",th:allGalleryData[n]?.th,en:allGalleryData[n]?.en,sci:allGalleryData[n]?.sci})),
+  gallery:galleryImgs.map(n=>({src:IMG+n+".jpg",thumb:TH+n+".jpg",th:allGalleryData[n]?.th,en:allGalleryData[n]?.en,sci:allGalleryData[n]?.sci})),
+  sphere:Array.from({length:33},(_,i)=>"gal"+(i+1)).map(n=>({src:IMG+n+".jpg",thumb:TH+n+".jpg",th:allGalleryData[n]?.th,en:allGalleryData[n]?.en,sci:allGalleryData[n]?.sci})),
   cert:certData.map(c=>({src:IMG+c.img+".jpg",thumb:TH+c.img+".jpg",th:c.th,en:c.en}))
 };
 const lb=document.getElementById("lb"),lbImg=document.getElementById("lbImg"),
@@ -945,11 +1405,14 @@ function openLB(g,i){
   lb.style.display="flex";
   void lb.offsetHeight; /* force reflow so the fade-in still animates */
   lb.classList.add("open");
-  document.body.classList.add("lb-lock");h
+  document.body.classList.add("lb-lock");
 }
 function renderLB(){
   const it=curG[curI];
-  lbCap.innerHTML=it.th?`<div class="th">${it.th}</div><div class="en">${it.en}</div>`:"";
+  lbCap.innerHTML=(it.th||it.en)
+    ? `<div class="th l-th">${it.th||it.en||""}</div><div class="th l-en">${it.en||it.th||""}</div>`
+      +(it.sci?`<div class="en">${it.sci}</div>`:"")
+    : "";
   lbCount.textContent=(curI+1)+" / "+curG.length;
   const token=++lbToken;
   if(lbLoaded[it.src]){ /* already downloaded — show instantly */
@@ -988,6 +1451,39 @@ document.addEventListener("keydown",e=>{
   if(e.key==="ArrowLeft")lbNav(-1);
 });
 
+/* ============ LANGUAGE TOGGLE (TH / EN) ============ */
+/* Both languages are always in the DOM; CSS decides which set is visible, so
+   switching costs nothing and needs no re-render of the generated sections. */
+const langToggle=document.getElementById("langToggle");
+function applyLang(l){
+  document.documentElement.setAttribute("data-lang",l);
+  document.documentElement.setAttribute("lang",l);
+  try{localStorage.setItem("lang",l);}catch(e){}
+  if(typeof setNavLang==="function")setNavLang(l);
+}
+langToggle.onclick=()=>{
+  applyLang(document.documentElement.getAttribute("data-lang")==="en"?"th":"en");
+};
+
+/* ============ THEME TOGGLE (light / dark) ============ */
+const themeToggle=document.getElementById("themeToggle");
+function applyTheme(t){
+  /* perf: freeze transitions for one frame so hundreds of elements don't
+     animate colour/shadow simultaneously at the moment of the swap */
+  document.documentElement.classList.add("theme-swap");
+  if(t==="light")document.documentElement.setAttribute("data-theme","light");
+  else document.documentElement.removeAttribute("data-theme");
+  try{localStorage.setItem("theme",t);}catch(e){}
+  if(window.__syncSiteBg) window.__syncSiteBg();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    document.documentElement.classList.remove("theme-swap");
+  }));
+}
+themeToggle.onclick=()=>{
+  const isLight=document.documentElement.getAttribute("data-theme")==="light";
+  applyTheme(isLight?"dark":"light");
+};
+
 /* ============ NAV: scroll, burger, spy ============ */
 const nav=document.getElementById("nav"),navLinks=document.getElementById("navLinks"),burger=document.getElementById("burger");
 window.addEventListener("scroll",()=>{nav.classList.toggle("scrolled",window.scrollY>40);});
@@ -1006,28 +1502,49 @@ window.addEventListener("scroll",()=>{
    on the real label). Skipped entirely for prefers-reduced-motion. */
 const prefersReducedNav=window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 if(!prefersReducedNav){
-  const LSW_CHARS="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  const LSW_STAGGER=25;   /* ms between letters — matches staggerDuration:5.0 */
-  const LSW_TICK=40;      /* ms per scramble frame */
+  const LSW_LATIN="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  const LSW_THAI="กขคฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ";
+  const LSW_STAGGER=55;   /* ms between letters — the wave travels across */
+  const LSW_TICK=85;      /* ms per scramble frame */
   const LSW_TICKS=4;      /* scramble frames before a letter settles */
+
+  /* Thai writes vowels and tone marks as combining characters that belong to
+     the consonant before them (ก + ◌ั + ◌้ is ONE thing on screen). Splitting
+     by code point would tear those apart, so split by grapheme cluster and
+     treat each cluster as one "letter". */
+  const seg = (typeof Intl!=="undefined" && Intl.Segmenter)
+    ? new Intl.Segmenter("th",{granularity:"grapheme"}) : null;
+  function splitLetters(str){
+    if(seg) return [...seg.segment(str)].map(x=>x.segment);
+    /* fallback: glue combining marks onto the preceding character */
+    const out=[];
+    for(const ch of str){
+      if(/[ัิ-ฺ็-๎]/.test(ch) && out.length) out[out.length-1]+=ch;
+      else out.push(ch);
+    }
+    return out;
+  }
+  const isThai=str=>/[฀-๿]/.test(str);
+
   function lswWrap(a){
     const label=a.textContent;
-    a.dataset.lswLabel=label;
+    const letters=splitLetters(label);
+    a._lswLetters=letters;
     a.textContent="";
-    [...label].forEach(ch=>{
+    letters.forEach(ch=>{
       const span=document.createElement("span");
       span.className="lsw-letter";
       span.textContent=ch===" "?" ":ch;
       a.appendChild(span);
     });
   }
-  function lswSettle(span,finalChar){
-    if(finalChar===" ")return;
+  function lswSettle(span,finalChar,pool){
+    if(finalChar===" "||finalChar===" ")return;
     clearInterval(span._lswTimer);
     let ticks=0;
     span._lswTimer=setInterval(()=>{
       if(ticks<LSW_TICKS){
-        span.textContent=LSW_CHARS[Math.floor(Math.random()*LSW_CHARS.length)];
+        span.textContent=pool[Math.floor(Math.random()*pool.length)];
         ticks++;
       }else{
         span.textContent=finalChar;
@@ -1036,15 +1553,30 @@ if(!prefersReducedNav){
     },LSW_TICK);
   }
   document.querySelectorAll(".nav-links a").forEach(a=>{
-    lswWrap(a);
     a.addEventListener("mouseenter",()=>{
-      const label=a.dataset.lswLabel;
+      const letters=a._lswLetters;
+      if(!letters)return;
+      /* scramble through the alphabet the label is actually written in */
+      const pool=isThai(letters.join(""))?LSW_THAI:LSW_LATIN;
       [...a.querySelectorAll(".lsw-letter")].forEach((span,i)=>{
-        setTimeout(()=>lswSettle(span,label[i]),i*LSW_STAGGER);
+        setTimeout(()=>lswSettle(span,letters[i],pool),i*LSW_STAGGER);
       });
     });
   });
+  window.__lswWrap=lswWrap;
 }
+
+/* Nav labels are swapped as plain text, then re-split into per-letter spans so
+   the hover animation works in both languages. */
+function setNavLang(l){
+  document.querySelectorAll(".nav-links a").forEach(a=>{
+    const label=(l==="en"?a.dataset.en:a.dataset.th);
+    if(label)a.textContent=label;
+    a._lswLetters=null;
+    if(window.__lswWrap)window.__lswWrap(a);
+  });
+}
+setNavLang(document.documentElement.getAttribute("data-lang")||"th");
 
 /* ============ HERO parallax + fade ============ */
 const heroContent=document.getElementById("heroContent"),heroBg=document.querySelector(".hero-bg");
@@ -1118,6 +1650,7 @@ if(aboutTrack&&aboutDotsEl){
     uniform float u_grain;
     uniform vec3  u_colors[4];
     uniform vec3  u_bg;
+    uniform float u_glow;
     vec3 permute(vec3 x){ return mod(((x*34.0)+1.0)*x, 289.0); }
     float snoise(vec2 v){
       const vec4 C = vec4(0.211324865405187, 0.366025403784439,
@@ -1160,9 +1693,12 @@ if(aboutTrack&&aboutDotsEl){
       col = mix(col, u_colors[1], smoothstep(-0.1, 0.6, n2) * 0.7);
       col = mix(col, u_colors[2], smoothstep(-0.3, 0.4, n3) * 0.6);
       col = mix(col, u_colors[3], smoothstep(0.0, 0.7, n1 * n2) * 0.5);
-      float glow = smoothstep(0.8, 0.0, dist) * 0.3;
+      float glow = smoothstep(0.8, 0.0, dist) * u_glow;
       col += u_colors[1] * glow;
-      col = mix(col * 0.2, col, vignette);
+      /* fade the edges toward the page background — on the dark theme that
+         reads as the old darkening, on the light one it stays paper-coloured
+         instead of going black in the corners */
+      col = mix(mix(col, u_bg, 0.8), col, vignette);
       float grain = fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453 + u_time);
       col += (grain - 0.5) * u_grain * 0.2;
       gl_FragColor = vec4(col, 1.0);
@@ -1193,22 +1729,36 @@ if(aboutTrack&&aboutDotsEl){
     time: gl.getUniformLocation(program, "u_time"),
     grain: gl.getUniformLocation(program, "u_grain"),
     colors: gl.getUniformLocation(program, "u_colors"),
-    bg: gl.getUniformLocation(program, "u_bg")
+    bg: gl.getUniformLocation(program, "u_bg"),
+    glow: gl.getUniformLocation(program, "u_glow")
   };
 
   function hexToRgb(hex){
     const h = hex.replace("#","");
     return [parseInt(h.slice(0,2),16)/255, parseInt(h.slice(2,4),16)/255, parseInt(h.slice(4,6),16)/255];
   }
-  /* Site palette (see :root) — green theme instead of the component's default */
-  const BG = hexToRgb("#050a07");             /* --bg */
-  const COLORS = ["#86efac","#4ade80","#37e07b","#0e3a24"].map(hexToRgb); /* --green-soft, --green-2, --green, --green-deep */
+  /* One field, two palettes. The dark theme keeps the original greens; the
+     light theme runs the same noise in earth tones on a paper ground, with a
+     much weaker centre glow so it doesn't blow out to white. */
+  const PALETTES = {
+    dark : {bg:"#050a07", colors:["#86efac","#4ade80","#37e07b","#0e3a24"], glow:0.30, grain:0.45},
+    light: {bg:"#f2eee3", colors:["#eae4d2","#d6d6b4","#bcc292","#e6d8bc"], glow:0.05, grain:0.30}
+  };
+  let BG, COLORS, GLOW, GRAIN_A;
+  function applyPalette(){
+    const pal = document.documentElement.getAttribute("data-theme")==="light"
+      ? PALETTES.light : PALETTES.dark;
+    BG = hexToRgb(pal.bg);
+    COLORS = pal.colors.map(hexToRgb);
+    GLOW = pal.glow;
+    GRAIN_A = pal.grain;
+  }
+  applyPalette();
   const SPEED = 0.35;
-  const GRAIN = 0.45;
   const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function resize(){
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = 1; /* perf: bg is a soft blurred gradient — 1x is visually identical, 4x fewer pixels */
     canvas.width = Math.max(1, window.innerWidth * dpr);
     canvas.height = Math.max(1, window.innerHeight * dpr);
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -1216,17 +1766,35 @@ if(aboutTrack&&aboutDotsEl){
   window.addEventListener("resize", resize);
   resize();
 
-  let raf;
-  function render(t){
+  let raf = null, running = false, lastDraw = 0;
+  const FRAME_MS = 1000/30;  /* the field drifts slowly — 30fps is plenty and
+                                halves the GPU work versus every frame */
+  function draw(t){
     gl.uniform2f(locs.res, canvas.width, canvas.height);
     gl.uniform1f(locs.time, t * 0.001 * SPEED);
-    gl.uniform1f(locs.grain, GRAIN);
+    gl.uniform1f(locs.grain, GRAIN_A);
+    gl.uniform1f(locs.glow, GLOW);
     gl.uniform3f(locs.bg, BG[0], BG[1], BG[2]);
     gl.uniform3fv(locs.colors, new Float32Array(COLORS.flat()));
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+  function render(t){
+    if(!running) return;
+    if(t - lastDraw >= FRAME_MS){ lastDraw = t; draw(t); }
     if(!prefersReduced) raf = requestAnimationFrame(render);
   }
-  requestAnimationFrame(render);
+  /* perf: a hidden tab needs no frames at all */
+  function shouldRun(){ return !document.hidden; }
+  function syncSiteBg(){
+    applyPalette();
+    const want = shouldRun();
+    if(want && !running){ running = true; lastDraw = 0; raf = requestAnimationFrame(render); }
+    else if(!want && running){ running = false; if(raf) cancelAnimationFrame(raf); raf = null; }
+    if(running) requestAnimationFrame(t=>{ lastDraw = t; draw(t); }); /* repaint at once on a theme swap */
+  }
+  window.__syncSiteBg = syncSiteBg;
+  document.addEventListener("visibilitychange", syncSiteBg);
+  syncSiteBg();
 })();
 
 /* ============ IMAGE / RIGHT-CLICK PROTECTION ============ */
