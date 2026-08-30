@@ -46,7 +46,8 @@ body{
   position:relative;
   -webkit-font-smoothing:antialiased;
 }
-body::before{ /* ambient glow field */
+.site-bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;opacity:.5}
+body::before{ /* ambient glow field — fallback base tint if WebGL is unavailable, and shows through the canvas's opacity */
   content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
   background:
     radial-gradient(600px 400px at 12% 8%, rgba(55,224,123,0.10), transparent 60%),
@@ -250,10 +251,26 @@ section{position:relative;padding:clamp(80px,12vw,140px) clamp(20px,6vw,60px)}
 
 /* SKILLS carousel */
 .carousel-wrap{margin-top:56px;position:relative}
-.carousel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.carousel-head{display:flex;justify-content:center;align-items:center;margin-bottom:20px;text-align:center}
 .carousel-head h3{font-family:var(--font-display);font-size:20px;font-weight:600}
 .carousel-head p{color:var(--muted);font-size:13px}
 .carousel-nav{display:flex;gap:10px}
+/* "Through the Lens" — fanned card-stack (adapted from a React CardStack component) */
+.cardstack{position:relative;height:330px;width:100%;perspective:1100px;user-select:none}
+.cardstack .cs-card{position:absolute;left:50%;bottom:0;width:380px;height:253px;margin-left:-190px;border-radius:18px;overflow:hidden;background:#0a140d;border:2px solid var(--stroke-green);box-shadow:0 20px 45px rgba(0,0,0,.5);cursor:pointer;transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .5s ease,box-shadow .5s ease}
+@media (min-width:1100px){
+  .cardstack{height:400px}
+  .cardstack .cs-card{width:500px;height:333px;margin-left:-250px}
+}
+.cardstack .cs-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.cardstack .cs-card.is-active{cursor:zoom-in;border-color:var(--green);box-shadow:0 30px 70px rgba(0,0,0,.65)}
+.cardstack-dots{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:26px}
+.cardstack-dots button{width:8px;height:8px;padding:0;border-radius:50%;background:rgba(255,255,255,.25);border:0;cursor:pointer;transition:.3s}
+.cardstack-dots button.active{background:var(--green);width:22px;border-radius:5px}
+@media (max-width:720px){
+  .cardstack{height:210px}
+  .cardstack .cs-card{width:230px;height:153px;margin-left:-115px}
+}
 .cbtn{width:44px;height:44px;border-radius:50%;background:var(--glass-strong);border:1px solid var(--stroke);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s}
 .cbtn:hover{border-color:var(--stroke-green);color:var(--green);transform:scale(1.06)}
 .carousel{overflow:hidden;border-radius:20px;min-width:0;max-width:100%}
@@ -284,6 +301,25 @@ section{position:relative;padding:clamp(80px,12vw,140px) clamp(20px,6vw,60px)}
 .cert-cap{padding:16px 18px}
 .cert-cap .th{font-family:'Noto Sans Thai';font-size:14px;color:#e3efe7}
 .cert-cap .en{font-size:12.5px;color:var(--muted);margin-top:4px}
+/* CERTIFICATES — animated stacked showcase (adapted from an animated-testimonials style component) */
+.cert-showcase{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;max-width:1080px;margin:0 auto}
+.cert-media{display:flex;flex-direction:column;align-items:center;gap:20px}
+.cert-stack{position:relative;width:100%;max-width:460px;height:340px}
+.cert-stack .cs-item{position:absolute;inset:0;border-radius:20px;overflow:hidden;cursor:pointer;background:#0a140d;box-shadow:0 25px 60px rgba(0,0,0,.5);transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .5s ease}
+.cert-stack .cs-item img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.cert-stack .cs-item::after{content:"";position:absolute;inset:0;border-radius:20px;border:1px solid var(--stroke);pointer-events:none}
+.cert-stack .cs-item.is-active{cursor:zoom-in}
+.cert-controls{display:flex;align-items:center;justify-content:center;gap:26px;width:100%;max-width:460px}
+.cert-count{font-family:var(--font-head);font-size:13px;letter-spacing:.1em;color:var(--muted);min-width:64px;text-align:center}
+.cert-count b{color:var(--green)}
+.cert-text{transition:opacity .35s ease,transform .35s ease}
+.cert-text.switching{opacity:0;transform:translateY(10px)}
+.cert-text .th{font-family:'Noto Sans Thai';font-size:15.5px;line-height:1.75;color:#e3efe7}
+.cert-text .en{font-size:13.5px;color:var(--green-soft);line-height:1.7;margin-top:16px}
+@media (max-width:860px){
+  .cert-showcase{grid-template-columns:1fr;gap:28px}
+  .cert-stack{height:260px}
+}
 
 /* CONTACT */
 .contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch}
@@ -394,6 +430,7 @@ body.lb-lock{overflow:hidden}
 </style>
 </head>
 <body>
+<canvas id="siteBg" class="site-bg" aria-hidden="true"></canvas>
 
 <!-- ===================== NAV ===================== -->
 <nav class="nav" id="nav">
@@ -558,15 +595,10 @@ Whether conducting forest surveys, identifying bird species, or assessing biodiv
 
     <div class="carousel-wrap reveal">
       <div class="carousel-head">
-        <div>
-          <h3>Through the Lens</h3>
-        </div>
-        <div class="carousel-nav">
-          <button class="cbtn" id="cPrev" aria-label="Previous"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
-          <button class="cbtn" id="cNext" aria-label="Next"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
-        </div>
+        <h3>Through the Lens</h3>
       </div>
-      <div class="carousel"><div class="carousel-track" id="cTrack"></div></div>
+      <div class="cardstack" id="cardStack" tabindex="0" aria-label="Featured photographs"></div>
+      <div class="cardstack-dots" id="cardDots"></div>
     </div>
   </div>
 </section>
@@ -591,7 +623,17 @@ Whether conducting forest surveys, identifying bird species, or assessing biodiv
       <div class="sec-index">05 — Certificates</div>
       <h2 class="sec-title">Certi<em>ficates</em></h2>
     </div>
-    <div class="cert-grid" id="certGrid"></div>
+    <div class="cert-showcase reveal">
+      <div class="cert-media">
+        <div class="cert-stack" id="certStack"></div>
+        <div class="cert-controls">
+          <button class="cbtn" id="certPrev" aria-label="Previous certificate"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+          <div class="cert-count" id="certCount"></div>
+          <button class="cbtn" id="certNext" aria-label="Next certificate"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+        </div>
+      </div>
+      <div class="cert-text" id="certText"></div>
+    </div>
   </div>
 </section>
 
@@ -765,28 +807,63 @@ skills.forEach((s,i)=>{
   sg.appendChild(c);
 });
 
-/* ============ BUILD CAROUSEL ============ */
-const ct=document.getElementById("cTrack");
+/* ============ BUILD "THROUGH THE LENS" CARD STACK (adapted from a React CardStack component) ============ */
+const cardStack=document.getElementById("cardStack"),cardDots=document.getElementById("cardDots");
+let csActive=0;
+const CS_MAX_OFFSET=3;   /* how many cards show on either side of the active one */
+const CS_SPACING=115;    /* px between fanned cards */
+const CS_ROTATE=9;       /* deg per step */
 featured.forEach((n,i)=>{
-  const s=document.createElement("div");
-  s.className="slide";
-  s.innerHTML=`<img src="${TH}${n}.jpg" alt="Featured photograph" loading="lazy"/>`;
-  s.onclick=()=>openLB("featured",i);
-  ct.appendChild(s);
+  const c=document.createElement("div");
+  c.className="cs-card";
+  c.innerHTML=`<img src="${TH}${n}.jpg" alt="Featured photograph" loading="lazy"/>`;
+  c.onclick=()=>{ if(i===csActive){ openLB("featured",csActive); } else { csActive=i; renderStack(); } };
+  cardStack.appendChild(c);
+  const dot=document.createElement("button");
+  dot.setAttribute("aria-label","Go to photo "+(i+1));
+  dot.onclick=()=>{csActive=i;renderStack();};
+  cardDots.appendChild(dot);
 });
-let cIndex=0;
-function perView(){return window.innerWidth<=720?1:window.innerWidth<=960?2:3;}
-function slideCar(){
-  const pv=perView();const max=Math.max(0,featured.length-pv);
-  cIndex=Math.max(0,Math.min(cIndex,max));
-  const slide=ct.querySelector(".slide");
-  const step=slide.getBoundingClientRect().width+18;
-  ct.style.transform=`translateX(${-cIndex*step}px)`;
+function csOffset(i,active,len){
+  const raw=i-active;
+  const alt=raw>0?raw-len:raw+len;
+  return Math.abs(alt)<Math.abs(raw)?alt:raw;
 }
-document.getElementById("cNext").onclick=()=>{cIndex++;slideCar();};
-document.getElementById("cPrev").onclick=()=>{cIndex--;slideCar();};
-window.addEventListener("resize",slideCar);
-setTimeout(slideCar,100);
+function renderStack(){
+  const cards=[...cardStack.children];
+  const len=cards.length;
+  cards.forEach((el,i)=>{
+    const off=csOffset(i,csActive,len);
+    const abs=Math.abs(off);
+    if(abs>CS_MAX_OFFSET){
+      el.style.opacity="0";el.style.pointerEvents="none";el.classList.remove("is-active");
+      return;
+    }
+    el.style.pointerEvents="auto";
+    const isActive=off===0;
+    const scale=isActive?1:Math.max(0.72,1-abs*0.12);
+    const x=off*CS_SPACING;
+    const y=abs*12;
+    const rot=off*CS_ROTATE;
+    el.style.transform=`translateX(${x}px) translateY(${-(isActive?14:0)+y}px) rotate(${rot}deg) scale(${scale})`;
+    el.style.opacity=isActive?"1":String(Math.max(0.35,0.85-abs*0.22));
+    el.style.zIndex=String(100-abs);
+    el.classList.toggle("is-active",isActive);
+  });
+  [...cardDots.children].forEach((d,i)=>d.classList.toggle("active",i===csActive));
+}
+renderStack();
+cardStack.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"){csActive=(csActive+1)%featured.length;renderStack();}
+  if(e.key==="ArrowLeft"){csActive=(csActive-1+featured.length)%featured.length;renderStack();}
+});
+/* gentle autoplay, paused while hovering the stack */
+let csHover=false;
+cardStack.addEventListener("mouseenter",()=>csHover=true);
+cardStack.addEventListener("mouseleave",()=>csHover=false);
+if(!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)){
+  setInterval(()=>{ if(!csHover){ csActive=(csActive+1)%featured.length; renderStack(); } },3500);
+}
 
 /* ============ BUILD GALLERY ============ */
 const gl=document.getElementById("gallery");
@@ -798,16 +875,54 @@ galleryImgs.forEach((n,i)=>{
   gl.appendChild(d);
 });
 
-/* ============ BUILD CERTIFICATES ============ */
-const cg=document.getElementById("certGrid");
+/* ============ BUILD CERTIFICATES (animated stacked showcase) ============ */
+const certStack=document.getElementById("certStack"),
+      certText=document.getElementById("certText"),
+      certCount=document.getElementById("certCount"),
+      certPrevBtn=document.getElementById("certPrev"),
+      certNextBtn=document.getElementById("certNext");
+let certActive=0;
+/* fixed, non-random per-index rotation so the stack looks the same on every render */
+const certTilt=certData.map((_,i)=>((i%2===0)?-1:1)*(4+(i%3)*2));
 certData.forEach((c,i)=>{
   const d=document.createElement("div");
-  d.className="cert-item reveal rs d"+((i%3)+1);
-  d.innerHTML=`<div class="cert-thumb"><img src="${TH}${c.img}.jpg" alt="${c.en}" loading="lazy"/></div>
-    <div class="cert-cap"><div class="th">${c.th}</div><div class="en">${c.en}</div></div>`;
-  d.onclick=()=>openLB("cert",i);
-  cg.appendChild(d);
+  d.className="cs-item";
+  d.innerHTML=`<img src="${TH}${c.img}.jpg" alt="${c.en}" loading="lazy"/>`;
+  d.onclick=()=>{ if(i===certActive){ openLB("cert",certActive); } else { certActive=i; renderCert(); } };
+  certStack.appendChild(d);
 });
+function renderCert(){
+  const items=[...certStack.children];
+  items.forEach((el,i)=>{
+    const offset=(i-certActive+certData.length)%certData.length;
+    if(offset===0){
+      el.style.transform="translateY(0) scale(1) rotate(0deg)";
+      el.style.opacity="1";
+      el.style.zIndex=String(certData.length+5);
+      el.classList.add("is-active");
+    }else if(offset<=2){
+      el.style.transform=`translateY(${offset*10}px) scale(${1-offset*0.05}) rotate(${certTilt[i]}deg)`;
+      el.style.opacity=String(0.55/offset);
+      el.style.zIndex=String(certData.length-offset);
+      el.classList.remove("is-active");
+    }else{
+      el.style.transform="translateY(30px) scale(0.85) rotate(0deg)";
+      el.style.opacity="0";
+      el.style.zIndex="0";
+      el.classList.remove("is-active");
+    }
+  });
+  certText.classList.add("switching");
+  setTimeout(()=>{
+    const c=certData[certActive];
+    certText.innerHTML=`<div class="th">${c.th}</div><div class="en">${c.en}</div>`;
+    certCount.innerHTML=`<b>${String(certActive+1).padStart(2,"0")}</b> / ${String(certData.length).padStart(2,"0")}`;
+    certText.classList.remove("switching");
+  },160);
+}
+certPrevBtn.onclick=()=>{certActive=(certActive-1+certData.length)%certData.length;renderCert();};
+certNextBtn.onclick=()=>{certActive=(certActive+1)%certData.length;renderCert();};
+renderCert();
 
 /* ============ LIGHTBOX ============ */
 const groups={
@@ -882,6 +997,52 @@ window.addEventListener("scroll",()=>{
   navLinks.querySelectorAll("a").forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+cur));
 });
 
+/* ============ NAV: random-letter-swap hover (adapted from a React/shadcn
+   RandomLetterSwap component into plain JS — each letter briefly cycles
+   through random characters, staggered left-to-right, then settles back
+   on the real label). Skipped entirely for prefers-reduced-motion. */
+const prefersReducedNav=window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if(!prefersReducedNav){
+  const LSW_CHARS="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  const LSW_STAGGER=25;   /* ms between letters — matches staggerDuration:2.0 */
+  const LSW_TICK=40;      /* ms per scramble frame */
+  const LSW_TICKS=4;      /* scramble frames before a letter settles */
+  function lswWrap(a){
+    const label=a.textContent;
+    a.dataset.lswLabel=label;
+    a.textContent="";
+    [...label].forEach(ch=>{
+      const span=document.createElement("span");
+      span.className="lsw-letter";
+      span.textContent=ch===" "?" ":ch;
+      a.appendChild(span);
+    });
+  }
+  function lswSettle(span,finalChar){
+    if(finalChar===" ")return;
+    clearInterval(span._lswTimer);
+    let ticks=0;
+    span._lswTimer=setInterval(()=>{
+      if(ticks<LSW_TICKS){
+        span.textContent=LSW_CHARS[Math.floor(Math.random()*LSW_CHARS.length)];
+        ticks++;
+      }else{
+        span.textContent=finalChar;
+        clearInterval(span._lswTimer);
+      }
+    },LSW_TICK);
+  }
+  document.querySelectorAll(".nav-links a").forEach(a=>{
+    lswWrap(a);
+    a.addEventListener("mouseenter",()=>{
+      const label=a.dataset.lswLabel;
+      [...a.querySelectorAll(".lsw-letter")].forEach((span,i)=>{
+        setTimeout(()=>lswSettle(span,label[i]),i*LSW_STAGGER);
+      });
+    });
+  });
+}
+
 /* ============ HERO parallax + fade ============ */
 const heroContent=document.getElementById("heroContent"),heroBg=document.querySelector(".hero-bg");
 window.addEventListener("scroll",()=>{
@@ -922,6 +1083,148 @@ if(aboutTrack&&aboutDotsEl){
   }
   resetAboutTimer();
 }
+
+
+/* ============ VELARIS ANIMATED GRADIENT BG (Contact visual) ============ */
+/* Ported from the Velaris WebGL component (React/shadcn) to plain JS so it
+   runs in this static site with no build step — colors adapted to the
+   site's green/near-black theme, and used as the whole page's animated
+   background (replacing the old static ambient-glow gradient behind
+   every section). Fixed to the viewport, very low opacity so photos and
+   text stay the focus; falls back to the static glow if WebGL is
+   unavailable. */
+(function(){
+  const canvas = document.getElementById("siteBg");
+  if(!canvas) return;
+  const gl = canvas.getContext("webgl");
+  if(!gl) return;
+
+  const vertexSrc = `
+    attribute vec2 position;
+    varying vec2 vUv;
+    void main(){
+      vUv = position * 0.5 + 0.5;
+      gl_Position = vec4(position, 0.0, 1.0);
+    }
+  `;
+  const fragmentSrc = `
+    precision highp float;
+    varying vec2 vUv;
+    uniform vec2  u_resolution;
+    uniform float u_time;
+    uniform float u_grain;
+    uniform vec3  u_colors[4];
+    uniform vec3  u_bg;
+    vec3 permute(vec3 x){ return mod(((x*34.0)+1.0)*x, 289.0); }
+    float snoise(vec2 v){
+      const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+               -0.577350269189626, 0.024390243902439);
+      vec2 i  = floor(v + dot(v, C.yy) );
+      vec2 x0 = v -   i + dot(i, C.xx);
+      vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+      vec4 x12 = x0.xyxy + C.xxzz;
+      x12.xy -= i1;
+      i = mod(i, 289.0);
+      vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+      + i.x + vec3(0.0, i1.x, 1.0 ));
+      vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
+        dot(x12.zw,x12.zw)), 0.0);
+      m = m*m ;
+      m = m*m ;
+      vec3 x = 2.0 * fract(p * C.www) - 1.0;
+      vec3 h = abs(x) - 0.5;
+      vec3 ox = floor(x + 0.5);
+      vec3 a0 = x - ox;
+      m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+      vec3 g;
+      g.x  = a0.x  * x0.x  + h.x  * x0.y;
+      g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+      return 130.0 * dot(m, g);
+    }
+    void main(){
+      vec2 uv = vUv;
+      float ratio = u_resolution.x / u_resolution.y;
+      vec2 p = uv - 0.5;
+      p.x *= ratio;
+      float t = u_time * 0.1;
+      float n1 = snoise(p * 0.4 + vec2(t * 0.2, -t * 0.3));
+      float n2 = snoise(p * 0.55 + vec2(-t * 0.15, t * 0.25) + n1 * 0.25);
+      float n3 = snoise(p * 0.75 + vec2(t * 0.1, -t * 0.2) + n2 * 0.2);
+      vec3 col = u_bg;
+      float dist = length(p) * 1.5;
+      float vignette = 1.0 - smoothstep(0.3, 1.2, dist);
+      col = mix(col, u_colors[0], smoothstep(-0.2, 0.5, n1) * 0.85);
+      col = mix(col, u_colors[1], smoothstep(-0.1, 0.6, n2) * 0.7);
+      col = mix(col, u_colors[2], smoothstep(-0.3, 0.4, n3) * 0.6);
+      col = mix(col, u_colors[3], smoothstep(0.0, 0.7, n1 * n2) * 0.5);
+      float glow = smoothstep(0.8, 0.0, dist) * 0.3;
+      col += u_colors[1] * glow;
+      col = mix(col * 0.2, col, vignette);
+      float grain = fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453 + u_time);
+      col += (grain - 0.5) * u_grain * 0.2;
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `;
+
+  function createShader(type, src){
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    return sh;
+  }
+  const program = gl.createProgram();
+  gl.attachShader(program, createShader(gl.VERTEX_SHADER, vertexSrc));
+  gl.attachShader(program, createShader(gl.FRAGMENT_SHADER, fragmentSrc));
+  gl.linkProgram(program);
+  gl.useProgram(program);
+
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const posLoc = gl.getAttribLocation(program, "position");
+  gl.enableVertexAttribArray(posLoc);
+  gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+  const locs = {
+    res: gl.getUniformLocation(program, "u_resolution"),
+    time: gl.getUniformLocation(program, "u_time"),
+    grain: gl.getUniformLocation(program, "u_grain"),
+    colors: gl.getUniformLocation(program, "u_colors"),
+    bg: gl.getUniformLocation(program, "u_bg")
+  };
+
+  function hexToRgb(hex){
+    const h = hex.replace("#","");
+    return [parseInt(h.slice(0,2),16)/255, parseInt(h.slice(2,4),16)/255, parseInt(h.slice(4,6),16)/255];
+  }
+  /* Site palette (see :root) — green theme instead of the component's default */
+  const BG = hexToRgb("#050a07");             /* --bg */
+  const COLORS = ["#86efac","#4ade80","#37e07b","#0e3a24"].map(hexToRgb); /* --green-soft, --green-2, --green, --green-deep */
+  const SPEED = 0.35;
+  const GRAIN = 0.45;
+  const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function resize(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.max(1, window.innerWidth * dpr);
+    canvas.height = Math.max(1, window.innerHeight * dpr);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  let raf;
+  function render(t){
+    gl.uniform2f(locs.res, canvas.width, canvas.height);
+    gl.uniform1f(locs.time, t * 0.001 * SPEED);
+    gl.uniform1f(locs.grain, GRAIN);
+    gl.uniform3f(locs.bg, BG[0], BG[1], BG[2]);
+    gl.uniform3fv(locs.colors, new Float32Array(COLORS.flat()));
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    if(!prefersReduced) raf = requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+})();
 
 /* ============ IMAGE / RIGHT-CLICK PROTECTION ============ */
 document.addEventListener("dragstart",e=>{if(e.target.tagName==="IMG")e.preventDefault();});
