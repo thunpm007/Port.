@@ -811,7 +811,9 @@ skills.forEach((s,i)=>{
 const cardStack=document.getElementById("cardStack"),cardDots=document.getElementById("cardDots");
 let csActive=0;
 const CS_MAX_OFFSET=3;   /* how many cards show on either side of the active one */
-const CS_SPACING=230;    /* px between fanned cards */
+const CS_SPACING_DESKTOP=230; /* px between fanned cards on PC */
+const CS_SPACING_MOBILE=170;  /* px between fanned cards on mobile (<=720px) */
+function csSpacing(){ return window.innerWidth<=720 ? CS_SPACING_MOBILE : CS_SPACING_DESKTOP; }
 const CS_ROTATE=9;       /* deg per step */
 featured.forEach((n,i)=>{
   const c=document.createElement("div");
@@ -842,7 +844,7 @@ function renderStack(){
     el.style.pointerEvents="auto";
     const isActive=off===0;
     const scale=isActive?1:Math.max(0.72,1-abs*0.12);
-    const x=off*CS_SPACING;
+    const x=off*csSpacing();
     const y=abs*12;
     const rot=off*CS_ROTATE;
     el.style.transform=`translateX(${x}px) translateY(${-(isActive?14:0)+y}px) rotate(${rot}deg) scale(${scale})`;
@@ -853,6 +855,7 @@ function renderStack(){
   [...cardDots.children].forEach((d,i)=>d.classList.toggle("active",i===csActive));
 }
 renderStack();
+window.addEventListener("resize",renderStack);
 cardStack.addEventListener("keydown",e=>{
   if(e.key==="ArrowRight"){csActive=(csActive+1)%featured.length;renderStack();}
   if(e.key==="ArrowLeft"){csActive=(csActive-1+featured.length)%featured.length;renderStack();}
