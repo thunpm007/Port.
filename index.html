@@ -257,13 +257,13 @@ section{position:relative;padding:clamp(80px,12vw,140px) clamp(20px,6vw,60px)}
 .carousel-nav{display:flex;gap:10px}
 /* "Through the Lens" — fanned card-stack (adapted from a React CardStack component) */
 .cardstack{position:relative;height:330px;width:100%;perspective:1100px;user-select:none}
-.cardstack .cs-card{position:absolute;left:50%;bottom:0;width:380px;height:253px;margin-left:-190px;border-radius:18px;overflow:hidden;background:#0a140d;border:2px solid var(--stroke-green);box-shadow:0 20px 45px rgba(0,0,0,.5);cursor:pointer;transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .5s ease,box-shadow .5s ease}
+.cardstack .cs-card{position:absolute;left:50%;bottom:0;width:380px;height:253px;margin-left:-190px;border-radius:18px;overflow:hidden;background:#0a140d;border:0;box-shadow:0 20px 45px rgba(0,0,0,.5);cursor:pointer;transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .5s ease,box-shadow .5s ease}
 @media (min-width:1100px){
   .cardstack{height:400px}
   .cardstack .cs-card{width:500px;height:333px;margin-left:-250px}
 }
 .cardstack .cs-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
-.cardstack .cs-card.is-active{cursor:zoom-in;border-color:var(--green);box-shadow:0 30px 70px rgba(0,0,0,.65)}
+.cardstack .cs-card.is-active{cursor:zoom-in;box-shadow:0 30px 70px rgba(0,0,0,.65)}
 .cardstack-dots{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:26px}
 .cardstack-dots button{width:8px;height:8px;padding:0;border-radius:50%;background:rgba(255,255,255,.25);border:0;cursor:pointer;transition:.3s}
 .cardstack-dots button.active{background:var(--green);width:22px;border-radius:5px}
@@ -811,7 +811,7 @@ skills.forEach((s,i)=>{
 const cardStack=document.getElementById("cardStack"),cardDots=document.getElementById("cardDots");
 let csActive=0;
 const CS_MAX_OFFSET=3;   /* how many cards show on either side of the active one */
-const CS_SPACING=115;    /* px between fanned cards */
+const CS_SPACING=230;    /* px between fanned cards */
 const CS_ROTATE=9;       /* deg per step */
 featured.forEach((n,i)=>{
   const c=document.createElement("div");
@@ -1004,7 +1004,7 @@ window.addEventListener("scroll",()=>{
 const prefersReducedNav=window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 if(!prefersReducedNav){
   const LSW_CHARS="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  const LSW_STAGGER=25;   /* ms between letters — matches staggerDuration:2.0 */
+  const LSW_STAGGER=25;   /* ms between letters — matches staggerDuration:5.0 */
   const LSW_TICK=40;      /* ms per scramble frame */
   const LSW_TICKS=4;      /* scramble frames before a letter settles */
   function lswWrap(a){
