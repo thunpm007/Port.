@@ -551,7 +551,7 @@ setNavLang(document.documentElement.getAttribute("data-lang")||"th");
     media.style.height=(400+progress*(mobile?200:400))+"px";
     hero.style.setProperty("--tx",(progress*(mobile?180:150)).toFixed(2));
     hero.style.setProperty("--fade",Math.max(0,1-progress*1.7).toFixed(3));
-    if(bg)bg.style.opacity=(1-progress).toFixed(3);
+    if(bg)bg.style.opacity="1"; /* stays fully visible so the real photo shows in the margin around the media at full expand, instead of fading to a flat fallback color */
     if(veil)veil.style.opacity=(0.5-progress*0.3).toFixed(3);
     hero.classList.toggle("is-expanded",progress>=1);
   }
