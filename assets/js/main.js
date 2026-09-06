@@ -212,8 +212,11 @@ if(!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").
   if(!host)return;
 
   const galItems=Array.from({length:33},(_,i)=>"gal"+(i+1));
+  const rotate=(arr,n)=>{n=((n%arr.length)+arr.length)%arr.length;return arr.slice(n).concat(arr.slice(0,n));};
   const ROWS=[{velocity:3,items:galItems},
-              {velocity:-3,items:[...galItems].reverse()}];
+              {velocity:-3,items:[...galItems].reverse()},
+              {velocity:2.6,items:rotate(galItems,11)},
+              {velocity:-2.6,items:rotate([...galItems].reverse(),11)}];
   const REPEAT=3;            /* copies per half — enough to span a wide screen */
   const rows=[];
 
@@ -544,14 +547,17 @@ setNavLang(document.documentElement.getAttribute("data-lang")||"th");
   const unlock=()=>{root.classList.remove("hero-lock");document.body.classList.remove("hero-lock");};
 
   /* the four numbers below are the component's own: media 300 + p*1250 wide
-     (650 on mobile), 400 + p*400 tall (200 on mobile), text sliding p*150vw
-     (180vw on mobile), and the veil easing 0.5 -> 0.2 */
+     (650 on mobile), 400 + p*400 tall (200 on mobile), capped at 95vw / 85vh
+     so a thin margin always stays around the card; text sliding p*150vw
+     (180vw on mobile), and the veil easing 0.5 -> 0.2. The bg photo stays
+     fully visible at all times (never fades) so that margin always shows
+     the real photo, not a dimming-to-black or flat fallback color. */
   function render(){
     media.style.width=(300+progress*(mobile?650:1250))+"px";
     media.style.height=(400+progress*(mobile?200:400))+"px";
     hero.style.setProperty("--tx",(progress*(mobile?180:150)).toFixed(2));
     hero.style.setProperty("--fade",Math.max(0,1-progress*1.7).toFixed(3));
-    if(bg)bg.style.opacity="1"; /* stays fully visible so the real photo shows in the margin around the media at full expand, instead of fading to a flat fallback color */
+    if(bg)bg.style.opacity="1";
     if(veil)veil.style.opacity=(0.5-progress*0.3).toFixed(3);
     hero.classList.toggle("is-expanded",progress>=1);
   }
@@ -656,6 +662,18 @@ const io=new IntersectionObserver((entries)=>{
 document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
 
 document.getElementById("yr").textContent=new Date().getFullYear();
+
+/* footer "last updated" — taken from the page's own Last-Modified date, so it
+   is right after every deploy instead of being a hand-edited string that goes
+   stale. The markup keeps a static date as the fallback if this doesn't run. */
+(function(){
+  const el=document.getElementById("lastUpdated");
+  if(!el)return;
+  const d=new Date(document.lastModified);
+  if(isNaN(d.getTime()))return;
+  const M=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  el.textContent=d.getDate()+" "+M[d.getMonth()]+" "+d.getFullYear();
+})();
 
 /* ============ ABOUT PHOTO SLIDER ============ */
 const aboutTrack=document.getElementById("aboutTrack"),aboutDotsEl=document.getElementById("aboutDots");
