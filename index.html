@@ -110,6 +110,9 @@ a{color:inherit;text-decoration:none}
 .hero{
   position:relative;height:100dvh;min-height:620px;width:100%;overflow:hidden;
   display:flex;align-items:center;justify-content:center;
+  background-color:#050a07; /* fallback behind hero-bg/hero-overlay — only shows
+    once hero-bg has faded to opacity:0 at full expand, so the margins around
+    the media card stay dark instead of exposing the page background */
   --tx:0;      /* how far the split text has slid apart (in vw) */
   --fade:1;    /* opacity of the supporting hero copy */
 }
@@ -120,11 +123,7 @@ a{color:inherit;text-decoration:none}
 }
 .hero-overlay{
   position:absolute;inset:0;z-index:1;
-  /* solid base UNDER the gradients — without this, once hero-bg fades to
-     opacity:0 at full expand, the page's own (light-theme) background shows
-     through the margins around the media card instead of staying dark */
-  background-color:#050a07;
-  background-image:
+  background:
     linear-gradient(180deg,rgba(5,10,7,0.55) 0%,rgba(5,10,7,0.25) 40%,rgba(5,10,7,0.85) 100%),
     radial-gradient(120% 100% at 50% 30%,transparent 60%,rgba(5,10,7,0.7) 100%);
 }
@@ -553,9 +552,9 @@ body.lb-lock{overflow:hidden}
 [data-theme="light"] .skill-card:hover .skill-ic{box-shadow:0 0 26px rgba(107,122,63,.28)}
 
 /* --- HERO (sits on photos: warm dark scrim instead of the green-black one) --- */
+[data-theme="light"] .hero{background-color:#201d15}
 [data-theme="light"] .hero-overlay{
-  background-color:#201d15;
-  background-image:
+  background:
     linear-gradient(180deg,rgba(32,29,21,0.55) 0%,rgba(32,29,21,0.22) 40%,rgba(32,29,21,0.86) 100%),
     radial-gradient(120% 100% at 50% 30%,transparent 60%,rgba(32,29,21,0.7) 100%);
 }
