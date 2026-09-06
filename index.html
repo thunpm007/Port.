@@ -120,7 +120,11 @@ a{color:inherit;text-decoration:none}
 }
 .hero-overlay{
   position:absolute;inset:0;z-index:1;
-  background:
+  /* solid base UNDER the gradients — without this, once hero-bg fades to
+     opacity:0 at full expand, the page's own (light-theme) background shows
+     through the margins around the media card instead of staying dark */
+  background-color:#050a07;
+  background-image:
     linear-gradient(180deg,rgba(5,10,7,0.55) 0%,rgba(5,10,7,0.25) 40%,rgba(5,10,7,0.85) 100%),
     radial-gradient(120% 100% at 50% 30%,transparent 60%,rgba(5,10,7,0.7) 100%);
 }
@@ -204,10 +208,10 @@ html.hero-lock,body.hero-lock{overflow:hidden;height:100%;overscroll-behavior:no
 .btn{
   display:inline-flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:600;font-size:14px;
   padding:14px 30px;border-radius:999px;cursor:pointer;transition:.3s;border:1px solid var(--stroke-green);
-  background:linear-gradient(135deg,rgba(55,224,123,.9),rgba(30,160,90,.9));color:#04140b;
-  box-shadow:0 10px 30px rgba(30,160,90,.35);
+  background:rgba(255,255,255,0.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#eafff0;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
 }
-.btn:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(55,224,123,.45)}
+.btn:hover{transform:translateY(-3px);background:rgba(255,255,255,0.14);box-shadow:0 16px 40px rgba(0,0,0,.45)}
 .scroll-ind{
   display:none;
 }
@@ -278,18 +282,34 @@ section{position:relative;padding:clamp(80px,12vw,140px) clamp(20px,6vw,60px)}
 .subhead .line{flex:1;height:1px;background:var(--stroke)}
 .field-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 
-/* Field-experience marquee — two rows drifting in opposite directions, sped up
-   and reversed by the page's scroll velocity (ported from a framer-motion
-   ScrollVelocity component to plain JS, see the script at the bottom). */
-.sv-rows{display:flex;flex-direction:column;gap:16px}
-.sv-row{position:relative;overflow:hidden;width:100%}
-/* fade the two ends so images enter and leave instead of getting cut off */
-.sv-row{-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
-        mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
-.sv-track{display:flex;flex-wrap:nowrap;gap:16px;will-change:transform}
-.sv-track .field-item{flex:0 0 auto;width:280px;aspect-ratio:4/3;opacity:1;transform:none}
-@media(max-width:960px){.sv-track .field-item{width:230px}}
-@media(max-width:720px){.sv-track .field-item{width:190px}}
+/* Field-experience vertical slider — a tall main frame with a vertical
+   thumbnail rail beside it, autoplaying every 2s (ported from an Embla
+   vertical-thumbnail-autostart carousel component to plain JS, see the
+   script further down). */
+.field-vslider{display:flex;gap:29px;align-items:flex-start;justify-content:center;height:540px}
+.fv-main{position:relative;flex:0 0 405px;width:405px;height:540px;aspect-ratio:3/4;border-radius:32px;overflow:hidden;cursor:zoom-in;background:#0a140d}
+.fv-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s ease}
+.fv-main img.active{opacity:1}
+.fv-main .fv-cap{position:absolute;left:0;right:0;bottom:0;padding:36px 43px;pointer-events:none;
+  background:linear-gradient(transparent,rgba(4,10,7,.88))}
+.fv-main .fv-cap .th{font-family:'Noto Sans Thai';font-size:27px;color:#fff}
+.fv-main .fv-cap .en{font-size:22.5px;color:#86efac;margin-top:7px}
+.fv-thumbs{display:flex;flex-direction:column;gap:18px;width:151px;height:540px;flex-shrink:0;overflow-y:auto;scrollbar-width:none}
+.fv-thumbs::-webkit-scrollbar{display:none}
+.fv-thumb{position:relative;flex:0 0 115px;border-radius:18px;overflow:hidden;cursor:pointer;
+  border:4px solid transparent;opacity:.5;transition:opacity .3s ease,border-color .3s ease}
+.fv-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.fv-thumb.active{opacity:1;border-color:var(--green)}
+.fv-thumb:hover{opacity:.85}
+@media(max-width:720px){
+  .field-vslider{flex-direction:column-reverse;height:auto;align-items:center}
+  .fv-main{flex:0 0 auto;width:378px;height:504px;aspect-ratio:3/4}
+  .fv-thumbs{flex-direction:row;width:100%;height:115px;overflow-x:auto;overflow-y:visible}
+  .fv-thumb{flex:0 0 151px}
+}
+[data-theme="light"] .fv-main,[data-theme="light"] .fv-thumb{background:#e6e1d3}
+[data-theme="light"] .fv-main .fv-cap{background:linear-gradient(transparent,rgba(32,29,21,.88))}
+[data-theme="light"] .fv-main .fv-cap .en{color:#c3cc99}
 .field-item{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;aspect-ratio:4/3;background:#0a140d}
 .field-item img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease,filter .5s ease}
 .field-item:hover img{transform:scale(1.08);filter:brightness(1.05)}
@@ -534,7 +554,8 @@ body.lb-lock{overflow:hidden}
 
 /* --- HERO (sits on photos: warm dark scrim instead of the green-black one) --- */
 [data-theme="light"] .hero-overlay{
-  background:
+  background-color:#201d15;
+  background-image:
     linear-gradient(180deg,rgba(32,29,21,0.55) 0%,rgba(32,29,21,0.22) 40%,rgba(32,29,21,0.86) 100%),
     radial-gradient(120% 100% at 50% 30%,transparent 60%,rgba(32,29,21,0.7) 100%);
 }
@@ -551,11 +572,10 @@ body.lb-lock{overflow:hidden}
   backdrop-filter:none;-webkit-backdrop-filter:none;
 }
 [data-theme="light"] .btn{
-  background:linear-gradient(135deg,rgba(139,153,84,.98),rgba(97,111,55,.98));color:#f7f5ec;
-  border-color:rgba(97,111,55,.5);
-  box-shadow:0 10px 30px rgba(97,111,55,.30);
+  color:#f1efe2;border-color:rgba(199,207,160,.38);
+  background:rgba(255,253,247,0.10);
 }
-[data-theme="light"] .btn:hover{box-shadow:0 16px 40px rgba(97,111,55,.42)}
+[data-theme="light"] .btn:hover{background:rgba(255,253,247,0.16)}
 
 /* --- overlays on photographs --- */
 [data-theme="light"] .about-photo .badge{
@@ -718,7 +738,7 @@ body.lb-lock{overflow:hidden}
 <!-- ===================== HERO ===================== -->
 <header class="hero" id="top">
   <div class="hero-bg" id="heroBg">
-    <div class="hero-slide" style="background-image:url('assets/img/hero3.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('assets/img/hero1.jpg')"></div>
   </div>
   <div class="hero-overlay"></div>
 
@@ -731,17 +751,14 @@ body.lb-lock{overflow:hidden}
                aria-label="Sunrise over lake and pine forest"></video>
         <div class="hero-veil" id="heroVeil"></div>
       </div>
-      <div class="hero-cap">
-        <span class="cap-hint"><span class="l-th">เลื่อนเพื่อขยาย</span><span class="l-en">Scroll to Expand</span></span>
-      </div>
     </div>
 
     <div class="hero-content" id="heroContent">
       <div class="hero-eyebrow"><span class="l-th">สัตว์ป่า  ช่างภาพ  การอนุรักษ์</span><span class="l-en">Wildlife  Photographer  Conservation</span></div>
       <h1 class="hero-title"><span class="hw hw-1">THUN</span><span class="hw hw-2">NATORN</span></h1>
-      <p class="hero-sub"><span class="l-th">วิทยาศาสตรบัณฑิต (วนศาสตร์)</span><span class="l-en">Bachelor of Science (Forestry)</span></p>
+      <p class="hero-sub"><span class="l-th">ธรรพ์ณธร พันธ์มุง</span><span class="l-en">Thunnatorn Phunmung</span></p>
 
-      <div class="hero-cta"><a href="#about" class="btn" id="heroCta"><span class="l-th">ดูผลงาน →</span><span class="l-en">Explore Portfolio →</span></a></div>
+      <div class="hero-cta"><a href="#about" class="btn" id="heroCta"><span class="l-th">Explore Portfolio →</span><span class="l-en">Explore Portfolio →</span></a></div>
     </div>
   </div>
 
@@ -828,7 +845,10 @@ Whether conducting forest surveys, identifying bird species, or assessing biodiv
 
     <div class="subhead reveal"><h3><span class="l-th">ประสบการณ์ภาคสนาม</span><span class="l-en">Field Experience</span></h3><div class="line"></div></div>
     <p class="sec-desc reveal" style="margin-top:-10px;margin-bottom:24px"><span class="l-th">ประสบการณ์ภาคสนามในการสำรวจ</span><span class="l-en">Field experience in forest &amp; wildlife surveys</span></p>
-    <div class="sv-rows reveal" id="fieldMarquee"></div>
+    <div class="field-vslider reveal" id="fieldVSlider">
+      <div class="fv-main" id="fvMain"></div>
+      <div class="fv-thumbs" id="fvThumbs"></div>
+    </div>
 
     <div class="subhead reveal" style="margin-top:56px"><h3><span class="l-th">ประสบการณ์ผู้นำและอาสาสมัคร</span><span class="l-en">Leadership &amp; Volunteer Experience</span></h3><div class="line"></div></div>
     <p class="sec-desc reveal" style="margin-top:-10px;margin-bottom:24px"><span class="l-th">ประสบการณ์กิจกรรมและความเป็นผู้นำ</span><span class="l-en">Leadership roles and volunteer activities</span></p>
@@ -1049,82 +1069,66 @@ const certData=[
 const IMG="assets/img/",TH="assets/img/thumb/";
 const zoomSVG='<span class="zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="16" y1="16" x2="21" y2="21"></line></svg></span>';
 
-/* ============ FIELD EXPERIENCE — SCROLL-VELOCITY MARQUEE ============
-   Ported from a framer-motion ScrollVelocity component to plain JS. Each row
-   drifts at its own constant speed; the page's scroll velocity scales that
-   speed and flips the direction, so the images surge when you scroll down and
-   run backwards when you scroll up. Two identical halves per track let the
-   transform wrap seamlessly at -50%. */
+/* ============ FIELD EXPERIENCE — VERTICAL THUMBNAIL AUTOSTART SLIDER ============
+   Ported from an Embla vertical-thumbnail-autostart carousel component to plain
+   JS: a tall main frame with a vertical thumbnail rail beside it. Autoplays
+   every 2s, does not loop past the last slide (matches the reference's
+   loop:false), and keeps playing through hover/clicks (stopOnMouseEnter and
+   stopOnInteraction are both false in the original). Clicking a thumbnail
+   jumps straight there; clicking the main photo opens the site lightbox. */
 (function(){
-  const host=document.getElementById("fieldMarquee");
-  if(!host)return;
+  const host=document.getElementById("fieldVSlider"),main=document.getElementById("fvMain"),thumbs=document.getElementById("fvThumbs");
+  if(!host||!main||!thumbs)return;
+  let idx=0,onScreen=true;
 
-  const ROWS=[{velocity:3,items:fieldData},
-              {velocity:-3,items:[...fieldData].reverse()}];
-  const REPEAT=3;            /* copies per half — enough to span a wide screen */
-  const rows=[];
+  fieldData.forEach((f,i)=>{
+    const img=document.createElement("img");
+    img.src=IMG+f.img+".jpg";img.alt=f.en;img.loading=i===0?"eager":"lazy";
+    if(i===0)img.classList.add("active");
+    main.appendChild(img);
 
-  ROWS.forEach(cfg=>{
-    const row=document.createElement("div"); row.className="sv-row";
-    const track=document.createElement("div"); track.className="sv-track";
-    for(let half=0;half<2;half++){
-      for(let r=0;r<REPEAT;r++){
-        cfg.items.forEach(f=>{
-          const idx=fieldData.indexOf(f);
-          const d=document.createElement("div");
-          d.className="field-item";
-          d.innerHTML=`<img src="${TH}${f.img}.jpg" alt="${f.en}" loading="lazy"/>${zoomSVG}
-            <div class="cap"><div class="th l-th">${f.th}</div><div class="th l-en">${f.en}</div></div>`;
-          d.onclick=()=>openLB("field",idx);
-          track.appendChild(d);
-        });
-      }
-    }
-    row.appendChild(track); host.appendChild(row);
-    const state={track,velocity:cfg.velocity,baseX:0,dir:1,paused:false};
-    /* hold still while the pointer is over a row so the images can be clicked */
-    row.addEventListener("mouseenter",()=>state.paused=true);
-    row.addEventListener("mouseleave",()=>state.paused=false);
-    rows.push(state);
+    const t=document.createElement("div");
+    t.className="fv-thumb"+(i===0?" active":"");
+    t.innerHTML=`<img src="${TH}${f.img}.jpg" alt="${f.en}" loading="lazy"/>`;
+    t.onclick=()=>goTo(i);
+    thumbs.appendChild(t);
   });
+  const cap=document.createElement("div");
+  cap.className="fv-cap";
+  main.appendChild(cap);
+  main.addEventListener("click",()=>openLB("field",idx));
+
+  function render(){
+    [...main.querySelectorAll("img")].forEach((img,i)=>img.classList.toggle("active",i===idx));
+    [...thumbs.children].forEach((t,i)=>t.classList.toggle("active",i===idx));
+    const f=fieldData[idx];
+    cap.innerHTML=`<div class="th l-th">${f.th}</div><div class="en l-en">${f.en}</div>`;
+    /* scroll only the thumbnail rail itself into position — never
+       element.scrollIntoView() here, since on a page this tall it can walk
+       up and drag the whole viewport down to this section on every autoplay
+       tick, fighting anyone trying to scroll away (e.g. back up to the hero) */
+    const activeThumb=thumbs.children[idx];
+    if(activeThumb){
+      thumbs.scrollTo({
+        top:activeThumb.offsetTop-(thumbs.clientHeight-activeThumb.clientHeight)/2,
+        left:activeThumb.offsetLeft-(thumbs.clientWidth-activeThumb.clientWidth)/2,
+        behavior:"smooth"
+      });
+    }
+  }
+  function goTo(i){ idx=Math.max(0,Math.min(fieldData.length-1,i)); render(); }
+  render();
 
   const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(reduced)return;   /* leave the rows parked */
-
-  /* wrap into the [-50%, 0] window the doubled track is built for */
-  function wrap(v){ const min=-50,range=50; return min+((((v-min)%range)+range)%range); }
-
-  let lastY=window.scrollY,lastT=0,smooth=0,raf=null,onScreen=false;
-
-  function frame(t){
-    if(!onScreen||document.hidden){ raf=null; return; }
-    const dt=lastT?Math.min(t-lastT,64):16; lastT=t;
-    const y=window.scrollY;
-    const raw=(y-lastY)/(dt/1000); lastY=y;
-    /* cheap spring: ease the measured velocity toward the raw reading */
-    smooth+=(raw-smooth)*Math.min(1,dt/1000*8);
-    /* map px/s onto the same 0..5 factor the original component used */
-    let factor=smooth/10000*5;
-    if(factor>5)factor=5; else if(factor<-5)factor=-5;
-
-    rows.forEach(r=>{
-      if(r.paused)return;
-      let moveBy=r.dir*r.velocity*(dt/1000);
-      if(factor<0)r.dir=-1; else if(factor>0)r.dir=1;
-      moveBy+=r.dir*moveBy*factor;
-      r.baseX=wrap(r.baseX+moveBy);
-      r.track.style.transform="translateX("+r.baseX+"%)";
-    });
-    raf=requestAnimationFrame(frame);
-  }
-  function start(){ if(!raf&&onScreen&&!document.hidden){ lastT=0; lastY=window.scrollY; raf=requestAnimationFrame(frame); } }
-
-  /* only animate while the section is actually on screen */
+  /* only autoplay while the section is actually on screen — otherwise the
+     interval keeps ticking (and re-centering the thumb rail) even while the
+     user has scrolled far away, e.g. up at the hero */
   if("IntersectionObserver" in window){
-    new IntersectionObserver(es=>{ onScreen=es[0].isIntersecting; start(); },{rootMargin:"200px 0px"}).observe(host);
-  }else{ onScreen=true; }
-  document.addEventListener("visibilitychange",start);
-  start();
+    new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;},{rootMargin:"100px 0px"}).observe(host);
+  }
+  if(!reduced){
+    setInterval(()=>{ if(onScreen&&idx<fieldData.length-1)goTo(idx+1); },2000);
+  }
 })();
 
 /* ============ BUILD SKILLS ============ */
