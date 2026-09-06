@@ -81,6 +81,31 @@ a{color:inherit;text-decoration:none}
   background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .3s ease;
 }
 .nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
+
+/* --- nav while it is still sitting on the hero photo ---
+   Until the page scrolls (.scrolled adds the solid bar), the nav sits directly
+   on the hero image, so it uses fixed light colors + a soft shadow the way the
+   hero copy does. The theme's own --text/--muted are meant for the page
+   background: in light mode they are near-black and vanish against the photo. */
+.nav:not(.scrolled) .brand{color:#f2f8f4;text-shadow:0 2px 14px rgba(0,0,0,.55)}
+.nav:not(.scrolled) .brand span{color:#86efac}
+.nav:not(.scrolled) .nav-links a{color:#dfeae2;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.nav:not(.scrolled) .nav-links a:hover{color:#fff}
+.nav:not(.scrolled) .nav-links a.active{color:#86efac}
+.nav:not(.scrolled) .nav-links a::after{background:#86efac}
+.nav:not(.scrolled) .lang-toggle,
+.nav:not(.scrolled) .theme-toggle{
+  background:rgba(8,14,10,.34);border-color:rgba(255,255,255,.26);color:#eef5f0;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.nav:not(.scrolled) .theme-toggle:hover{border-color:#86efac;color:#86efac}
+.nav:not(.scrolled) .lang-toggle:hover{border-color:#86efac}
+.nav:not(.scrolled) .lang-toggle span{color:#dfeae2}
+/* the selected language pill keeps its green fill — re-stated here so it still
+   outranks the rule just above */
+[data-lang="th"] .nav:not(.scrolled) .lang-toggle .lt-th,
+[data-lang="en"] .nav:not(.scrolled) .lang-toggle .lt-en{background:var(--green);color:#08120c}
+.nav:not(.scrolled) .burger span{background:#eef5f0}
 .burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:8px}
 .burger span{width:24px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
 .burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
@@ -651,6 +676,13 @@ body.lb-lock{overflow:hidden}
 }
 @media(max-width:720px){
   html{scroll-padding-top:64px}
+  /* the eyebrow is uppercase with .4em tracking — on a phone that single
+     nowrap line is far wider than the screen, so let it wrap and tighten it */
+  .hero-eyebrow{
+    white-space:normal;letter-spacing:.2em;font-size:11px;line-height:1.8;
+    max-width:min(90vw,420px);margin-left:auto;margin-right:auto;
+  }
+  .hero-sub{white-space:normal}
   .cert-grid{grid-template-columns:1fr}
   .gallery{column-count:2}
   .carousel-track .slide{flex:0 0 100%}
@@ -658,7 +690,16 @@ body.lb-lock{overflow:hidden}
   section{padding-left:20px;padding-right:20px}
 }
 @media(max-width:440px){
-  .skills-grid{grid-template-columns:1fr}
+  /* two cards per row all the way down — the padding, icon and type shrink so
+     a pair still fits across a 360px screen */
+  .skills-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .skill-card{padding:18px 14px;border-radius:16px}
+  .skill-ic{width:42px;height:42px;border-radius:12px;margin-bottom:13px}
+  .skill-ic svg{width:21px;height:21px}
+  .skill-name{font-size:15px;margin-bottom:6px}
+  .skill-th{font-size:12px;line-height:1.6}
+  .skill-en{font-size:11px;margin-top:6px}
+  .hero-eyebrow{letter-spacing:.15em;font-size:10.5px}
 }
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:.001s!important;transition-duration:.001s!important}
