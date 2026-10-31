@@ -211,7 +211,7 @@ if(!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").
   const host=document.getElementById("galleryMarquee");
   if(!host)return;
 
-  const galItems=Array.from({length:35},(_,i)=>"gal"+(i+1));
+  const galItems=Array.from({length:33},(_,i)=>"gal"+(i+1));
   const rotate=(arr,n)=>{n=((n%arr.length)+arr.length)%arr.length;return arr.slice(n).concat(arr.slice(0,n));};
   const ROWS=[{velocity:3,items:galItems},
               {velocity:-3,items:[...galItems].reverse()},
